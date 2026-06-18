@@ -55,8 +55,8 @@ const ProjectCard = (() => {
       </div>
     `;
 
-    // Click opens drawer
-    card.addEventListener('click', () => Drawer.open(project));
+    // Click opens full Workspace page
+    card.addEventListener('click', () => Workspace.open(project));
 
     return card;
   }

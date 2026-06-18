@@ -14,6 +14,7 @@
     families:  { el: 'view-families',   render: () => FamiliesView.render() },
     compare:   { el: 'view-compare',    render: () => CompareView.render() },
     settings:  { el: 'view-settings',   render: () => SettingsView.render() },
+    workspace: { el: 'view-workspace',  render: () => Workspace.render() },
   };
 
   // ── Navigation ────────────────────────
@@ -35,6 +36,11 @@
       const el = DOM.id(cfg.el);
       if (el) el.hidden = key !== view;
     });
+    // Hide the top search/filter header in workspace — workspace has its own header
+    const contentHeader = DOM.id('content-header');
+    const scanProgress  = DOM.id('scan-progress');
+    if (contentHeader) contentHeader.hidden = view === 'workspace';
+    if (scanProgress && view === 'workspace') scanProgress.hidden = true;
     // Render active view
     const v = VIEWS[view];
     if (v) v.render();
@@ -42,6 +48,12 @@
 
   State.on('projects', () => {
     if (State.get('currentView') === 'dashboard') DashboardView.render();
+  });
+
+  // When a project is opened in the workspace, navigate and render
+  State.on('workspaceProject', () => {
+    const view = State.get('currentView');
+    if (view === 'workspace') Workspace.render();
   });
 
   State.on('searchQuery', () => DashboardView.render());
