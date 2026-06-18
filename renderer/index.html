@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevVault — Developer Memory System</title>
+  <meta name="description" content="Track, organize, and remember all your development projects.">
+
+  <!-- Design System -->
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/panels.css">
+  <link rel="stylesheet" href="styles/views.css">
+  <link rel="stylesheet" href="styles/animations.css">
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- SIDEBAR NAVIGATION -->
+  <!-- ═══════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar__header">
+      <div class="sidebar__logo">
+        <span class="sidebar__logo-icon">◆</span>
+        <h1 class="sidebar__title">DevVault</h1>
+      </div>
+      <span class="sidebar__version">v2.0</span>
+    </div>
+
+    <nav class="sidebar__nav">
+      <button class="sidebar__nav-item sidebar__nav-item--active" data-view="dashboard" id="nav-dashboard">
+        <svg class="sidebar__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Dashboard</span>
+      </button>
+      <button class="sidebar__nav-item" data-view="timeline" id="nav-timeline">
+        <svg class="sidebar__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>Timeline</span>
+      </button>
+      <button class="sidebar__nav-item" data-view="families" id="nav-families">
+        <svg class="sidebar__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+        <span>Families</span>
+      </button>
+      <button class="sidebar__nav-item" data-view="compare" id="nav-compare">
+        <svg class="sidebar__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span>Compare</span>
+      </button>
+      <button class="sidebar__nav-item" data-view="settings" id="nav-settings">
+        <svg class="sidebar__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <div class="sidebar__footer">
+      <button class="btn btn--primary btn--full" id="btn-refresh-vault">
+        <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+        Refresh Vault
+      </button>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- MAIN CONTENT AREA -->
+  <!-- ═══════════════════════════════════════ -->
+  <main class="content" id="content">
+    <!-- Top bar with search and stats -->
+    <header class="content__header" id="content-header">
+      <div class="search-bar" id="search-bar">
+        <svg class="search-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="search-bar__input" id="search-input" placeholder="Search projects...">
+        <div class="search-bar__filters">
+          <select class="search-bar__select" id="filter-tech">
+            <option value="">All Tech</option>
+          </select>
+          <select class="search-bar__select" id="filter-ai">
+            <option value="">All AI</option>
+          </select>
+          <select class="search-bar__select" id="filter-activity">
+            <option value="">All Activity</option>
+          </select>
+        </div>
+      </div>
+      <div class="content__stats" id="content-stats">
+        <!-- Populated by JS -->
+      </div>
+    </header>
+
+    <!-- Scan progress bar (hidden by default) -->
+    <div class="scan-progress" id="scan-progress" hidden>
+      <div class="scan-progress__bar">
+        <div class="scan-progress__fill" id="scan-progress-fill"></div>
+      </div>
+      <span class="scan-progress__text" id="scan-progress-text">Scanning...</span>
+    </div>
+
+    <!-- View containers (one visible at a time) -->
+    <section class="view" id="view-dashboard">
+      <div class="project-grid" id="project-grid">
+        <!-- Project cards rendered here by dashboard.view.js -->
+      </div>
+    </section>
+
+    <section class="view" id="view-timeline" hidden>
+      <div class="timeline" id="timeline-container">
+        <!-- Timeline events rendered by timeline.view.js -->
+      </div>
+    </section>
+
+    <section class="view" id="view-families" hidden>
+      <div class="families" id="families-container">
+        <!-- Family groups rendered by families.view.js -->
+      </div>
+    </section>
+
+    <section class="view" id="view-compare" hidden>
+      <div class="compare" id="compare-container">
+        <!-- Comparison matrix rendered by compare.view.js -->
+      </div>
+    </section>
+
+    <section class="view" id="view-settings" hidden>
+      <div class="settings" id="settings-container">
+        <!-- Settings panel rendered by settings.view.js -->
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- DRAWER (Slide-in detail panel) -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="drawer-overlay" id="drawer-overlay" hidden></div>
+  <aside class="drawer" id="drawer" hidden>
+    <div class="drawer__content" id="drawer-content">
+      <!-- Populated by drawer.js -->
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- TOAST CONTAINER -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- MODAL CONTAINER -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-overlay" hidden>
+    <div class="modal" id="modal">
+      <!-- Populated by modal.js -->
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- WELCOME/EMPTY STATE -->
+  <!-- ═══════════════════════════════════════ -->
+  <template id="template-empty-state">
+    <div class="empty-state">
+      <div class="empty-state__icon">◆</div>
+      <h2 class="empty-state__title">Welcome to DevVault</h2>
+      <p class="empty-state__text">Add a watched folder in Settings to get started.</p>
+      <button class="btn btn--primary" id="btn-empty-goto-settings">Open Settings</button>
+    </div>
+  </template>
+
+  <!-- Scripts (order matters — utils first, then components, then views, then app) -->
+  <script src="scripts/utils/dom.js"></script>
+  <script src="scripts/utils/format.js"></script>
+  <script src="scripts/utils/icons.js"></script>
+  <script src="scripts/api.js"></script>
+  <script src="scripts/state.js"></script>
+  <script src="scripts/components/toast.js"></script>
+  <script src="scripts/components/modal.js"></script>
+  <script src="scripts/components/project-card.js"></script>
+  <script src="scripts/components/drawer.js"></script>
+  <script src="scripts/components/search-bar.js"></script>
+  <script src="scripts/components/tag-input.js"></script>
+  <script src="scripts/views/dashboard.view.js"></script>
+  <script src="scripts/views/timeline.view.js"></script>
+  <script src="scripts/views/families.view.js"></script>
+  <script src="scripts/views/compare.view.js"></script>
+  <script src="scripts/views/settings.view.js"></script>
+  <script src="scripts/app.js"></script>
+</body>
+</html>

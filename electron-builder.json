@@ -1,0 +1,16 @@
+{
+  "appId": "com.devvault.app",
+  "productName": "DevVault",
+  "directories": {
+    "output": "release"
+  },
+  "files": [
+    "dist/**/*",
+    "renderer/**/*",
+    "package.json"
+  ],
+  "win": {
+    "target": "nsis",
+    "icon": "renderer/assets/icons/icon.ico"
+  }
+}

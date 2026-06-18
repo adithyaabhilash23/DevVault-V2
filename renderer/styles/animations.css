@@ -1,0 +1,48 @@
+/* DevVault V2 — animations.css — Transitions, micro-animations, keyframes */
+
+/* Fade in */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes slideOutRight { from { transform: translateX(0); } to { transform: translateX(100%); } }
+
+/* Toast */
+@keyframes toastIn { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes toastOut { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(100px); } }
+
+/* Pulse glow for accent icon */
+@keyframes pulseGlow { 0%, 100% { filter: drop-shadow(0 0 8px var(--accent-glow)); } 50% { filter: drop-shadow(0 0 16px var(--accent-glow)); } }
+
+/* Card staggered entrance */
+.project-card { animation: fadeInUp 0.3s ease both; }
+.project-card:nth-child(1) { animation-delay: 0.02s; }
+.project-card:nth-child(2) { animation-delay: 0.04s; }
+.project-card:nth-child(3) { animation-delay: 0.06s; }
+.project-card:nth-child(4) { animation-delay: 0.08s; }
+.project-card:nth-child(5) { animation-delay: 0.10s; }
+.project-card:nth-child(6) { animation-delay: 0.12s; }
+.project-card:nth-child(7) { animation-delay: 0.14s; }
+.project-card:nth-child(8) { animation-delay: 0.16s; }
+.project-card:nth-child(9) { animation-delay: 0.18s; }
+.project-card:nth-child(10) { animation-delay: 0.20s; }
+.project-card:nth-child(n+11) { animation-delay: 0.22s; }
+
+/* Drawer animation */
+.drawer--open { animation: slideInRight var(--transition-slow) both; }
+.drawer--closing { animation: slideOutRight 0.25s ease both; }
+
+/* Toast animation */
+.toast { animation: toastIn 0.3s ease both; }
+.toast--leaving { animation: toastOut 0.3s ease both; }
+
+/* Timeline stagger */
+.timeline__item { animation: fadeInUp 0.3s ease both; }
+
+/* Sidebar logo pulse */
+.sidebar__logo-icon { animation: pulseGlow 3s ease-in-out infinite; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}

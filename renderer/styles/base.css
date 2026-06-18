@@ -1,0 +1,189 @@
+/**
+ * DevVault V2 — base.css
+ * 
+ * Design system foundation: CSS reset, custom properties (tokens),
+ * typography, and color palette.
+ * 
+ * All other CSS files consume tokens defined here.
+ */
+
+/* ═══════════════════════════════════════ */
+/* RESET                                   */
+/* ═══════════════════════════════════════ */
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bg-base);
+  overflow: hidden;
+  height: 100vh;
+}
+
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; font-family: inherit; border: none; background: none; }
+input, select, textarea { font-family: inherit; font-size: inherit; }
+img { max-width: 100%; display: block; }
+ul, ol { list-style: none; }
+
+/* ═══════════════════════════════════════ */
+/* COLOR TOKENS — DARK THEME              */
+/* ═══════════════════════════════════════ */
+
+:root {
+  /* Base backgrounds */
+  --bg-base:       hsl(240, 20%, 4%);
+  --bg-surface:    hsl(240, 15%, 8%);
+  --bg-elevated:   hsl(240, 12%, 12%);
+  --bg-hover:      hsl(240, 10%, 16%);
+  --bg-active:     hsl(240, 10%, 20%);
+
+  /* Borders */
+  --border-subtle:  hsl(240, 10%, 15%);
+  --border-default: hsl(240, 10%, 20%);
+  --border-strong:  hsl(240, 10%, 30%);
+
+  /* Text */
+  --text-primary:   hsl(0, 0%, 95%);
+  --text-secondary: hsl(0, 0%, 65%);
+  --text-tertiary:  hsl(0, 0%, 45%);
+  --text-disabled:  hsl(0, 0%, 30%);
+
+  /* Accent — Electric Indigo */
+  --accent-hue: 245;
+  --accent:        hsl(var(--accent-hue), 85%, 65%);
+  --accent-hover:  hsl(var(--accent-hue), 85%, 72%);
+  --accent-muted:  hsl(var(--accent-hue), 40%, 20%);
+  --accent-glow:   hsl(var(--accent-hue), 100%, 70%);
+
+  /* Semantic colors */
+  --color-success:  hsl(152, 70%, 50%);
+  --color-warning:  hsl(38, 95%, 55%);
+  --color-danger:   hsl(0, 75%, 60%);
+  --color-info:     hsl(200, 85%, 60%);
+
+  /* Activity category colors */
+  --activity-today:     hsl(152, 70%, 50%);
+  --activity-week:      hsl(200, 85%, 60%);
+  --activity-month:     hsl(38, 95%, 55%);
+  --activity-inactive:  hsl(0, 0%, 45%);
+
+  /* Tech stack badge colors */
+  --tech-react:     hsl(193, 95%, 55%);
+  --tech-nextjs:    hsl(0, 0%, 85%);
+  --tech-node:      hsl(120, 55%, 45%);
+  --tech-python:    hsl(210, 65%, 55%);
+  --tech-flutter:   hsl(205, 90%, 55%);
+  --tech-unity:     hsl(0, 0%, 70%);
+  --tech-java:      hsl(15, 85%, 55%);
+  --tech-csharp:    hsl(265, 65%, 55%);
+  --tech-html:      hsl(16, 85%, 55%);
+  --tech-typescript:hsl(210, 65%, 55%);
+  --tech-vite:      hsl(270, 85%, 60%);
+  --tech-electron:  hsl(195, 70%, 50%);
+
+  /* Spacing scale (4px base) */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+
+  /* Border radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px hsla(0, 0%, 0%, 0.3);
+  --shadow-md: 0 4px 12px hsla(0, 0%, 0%, 0.4);
+  --shadow-lg: 0 8px 30px hsla(0, 0%, 0%, 0.5);
+  --shadow-glow: 0 0 20px hsla(var(--accent-hue), 85%, 65%, 0.15);
+
+  /* Typography */
+  --font-xs:  0.75rem;    /* 12px */
+  --font-sm:  0.8125rem;  /* 13px */
+  --font-md:  0.875rem;   /* 14px */
+  --font-lg:  1rem;       /* 16px */
+  --font-xl:  1.25rem;    /* 20px */
+  --font-2xl: 1.5rem;     /* 24px */
+  --font-3xl: 2rem;       /* 32px */
+
+  /* Layout */
+  --sidebar-width: 240px;
+  --header-height: 64px;
+  --drawer-width: 480px;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ═══════════════════════════════════════ */
+/* TYPOGRAPHY UTILITIES                    */
+/* ═══════════════════════════════════════ */
+
+.text-xs      { font-size: var(--font-xs); }
+.text-sm      { font-size: var(--font-sm); }
+.text-md      { font-size: var(--font-md); }
+.text-lg      { font-size: var(--font-lg); }
+.text-xl      { font-size: var(--font-xl); }
+.text-2xl     { font-size: var(--font-2xl); }
+.text-3xl     { font-size: var(--font-3xl); }
+.text-muted   { color: var(--text-secondary); }
+.text-dimmed  { color: var(--text-tertiary); }
+.text-accent  { color: var(--accent); }
+.font-medium  { font-weight: 500; }
+.font-semibold{ font-weight: 600; }
+.font-bold    { font-weight: 700; }
+
+/* ═══════════════════════════════════════ */
+/* SCROLLBAR                               */
+/* ═══════════════════════════════════════ */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-strong);
+}
+
+/* ═══════════════════════════════════════ */
+/* SELECTION                               */
+/* ═══════════════════════════════════════ */
+
+::selection {
+  background: var(--accent-muted);
+  color: var(--accent);
+}

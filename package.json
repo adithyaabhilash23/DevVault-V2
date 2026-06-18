@@ -1,0 +1,22 @@
+{
+  "name": "devvault-v2",
+  "version": "2.0.0",
+  "description": "Desktop Developer Memory System — Track, organize, and remember all your projects.",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "dev": "concurrently \"tsc -w\" \"electron .\"",
+    "build": "tsc",
+    "start": "tsc && electron .",
+    "dist": "tsc && electron-builder"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^35.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.0",
+    "concurrently": "^9.1.0",
+    "electron-builder": "^26.0.0"
+  }
+}
