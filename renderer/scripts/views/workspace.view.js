@@ -129,7 +129,8 @@ const Workspace = (() => {
 
       // Re-render tree
       treeEl.innerHTML = renderTreeNode(treeEl._rootNode, 0);
-      wireTreeEvents(treeEl, rootPath);   // re-wire after innerHTML swap
+      // NOTE: listener is NOT re-attached — delegation on the persistent
+      // parent element handles all dynamically created child nodes.
 
       // Update file list panel
       renderFileList(dirPath);
@@ -187,21 +188,30 @@ const Workspace = (() => {
     }
 
     panel.innerHTML = entries.map((f, i) => `
-      <div class="ws-file-row${i === 0 ? ' ws-file-row--active' : ''}" data-idx="${i}">
-        ${f.isDir
-          ? fileTypeIcon(f.name, true)
-          : fileTypeIcon(f.name, false)}
+      <div class="ws-file-row${i === 0 ? ' ws-file-row--active' : ''}"
+           data-path="${dirPath}\\${f.name}"
+           data-is-dir="${f.isDir}">
+        ${f.isDir ? fileTypeIcon(f.name, true) : fileTypeIcon(f.name, false)}
         <span class="ws-file__name">${f.name}</span>
         <span class="ws-file__size">${f.isDir ? '—' : Format.bytes(f.size)}</span>
         <span class="ws-file__mod">${Format.relativeTime(f.lastModified)}</span>
       </div>
     `).join('');
 
-    // Wire click selection on file rows
+    // Wire click: folders navigate, files highlight only
+    const treeEl = DOM.id('ws-tree');
     panel.querySelectorAll('.ws-file-row').forEach(row => {
-      row.addEventListener('click', () => {
+      row.addEventListener('click', async () => {
         panel.querySelectorAll('.ws-file-row').forEach(r => r.classList.remove('ws-file-row--active'));
         row.classList.add('ws-file-row--active');
+        if (row.dataset.isDir === 'true' && treeEl) {
+          const folderPath = row.dataset.path;
+          selectedFolderPath = folderPath;
+          expandedFolders.add(folderPath);
+          await lazyLoadChildren(treeEl._rootNode, folderPath, folderPath);
+          treeEl.innerHTML = renderTreeNode(treeEl._rootNode, 0);
+          renderFileList(folderPath);
+        }
       });
     });
   }
