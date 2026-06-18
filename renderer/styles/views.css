@@ -53,17 +53,40 @@
 /* ── Header ─────────────────────────────────────────────── */
 .ws-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  padding: var(--space-5) var(--space-6);
+  padding: var(--space-3) var(--space-6);
   border-bottom: 1px solid var(--border-subtle);
   background: var(--bg-surface);
   flex-shrink: 0;
   gap: var(--space-4);
 }
 
-.ws-header__left { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
+.ws-header__left { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .ws-header__badges { display: flex; align-items: center; gap: var(--space-2); flex-shrink: 0; }
+
+/* Title row: name + badges side by side */
+.ws-header__title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* Meta row: tech · path on one compact line */
+.ws-header__meta-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  overflow: hidden;
+  min-width: 0;
+}
+
+.ws-path-sep {
+  color: var(--text-tertiary);
+  font-size: var(--font-xs);
+  flex-shrink: 0;
+}
 
 .ws-breadcrumb {
   display: flex;
@@ -87,7 +110,7 @@
 .ws-breadcrumb__current { color: var(--text-secondary); }
 
 .ws-title {
-  font-size: var(--font-2xl);
+  font-size: var(--font-xl);
   font-weight: 700;
   color: var(--text-primary);
   line-height: 1.2;
@@ -97,10 +120,12 @@
 }
 
 .ws-tech-inline {
-  font-size: var(--font-sm);
+  font-size: var(--font-xs);
   color: var(--accent);
   font-weight: 500;
   letter-spacing: 0.01em;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .ws-path {
@@ -200,11 +225,14 @@
   cursor: default;
 }
 .ws-file-row:hover { background: var(--bg-hover); }
+
+/* Selected file — vivid purple with glow */
 .ws-file-row--active {
-  background: var(--accent-muted);
-  border-left: 2px solid var(--accent);
+  background: hsl(265, 60%, 22%);
+  border-left: 2px solid hsl(265, 80%, 65%);
+  box-shadow: inset 0 0 12px hsla(265, 80%, 60%, 0.15);
 }
-.ws-file-row--active .ws-file__name { color: var(--accent); }
+.ws-file-row--active .ws-file__name { color: hsl(265, 85%, 78%); font-weight: 500; }
 
 .ws-file__icon { font-size: 0.7rem; }
 .ws-file__name { color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -299,5 +327,38 @@
   margin-top: auto;
   border-top: 1px solid var(--border-subtle);
   flex-shrink: 0;
+}
+
+/* ── File Type Badges (Column 2) ─────────────────────────── */
+.ws-file-type-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  width: 22px;
+  height: 16px;
+  border-radius: 3px;
+  border: 1px solid;
+  flex-shrink: 0;
+  font-family: 'Courier New', monospace;
+}
+
+/* ── Folder Icon in Tree ─────────────────────────────────── */
+.ws-tree__icon--folder { color: hsl(38, 85%, 55%); }
+
+/* ── Loading / Empty States ──────────────────────────────── */
+.ws-loading {
+  padding: var(--space-4) var(--space-4);
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.ws-empty-dir {
+  padding: var(--space-4) var(--space-4);
+  font-size: var(--font-xs);
+  color: var(--text-tertiary);
 }
 

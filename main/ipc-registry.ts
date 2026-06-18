@@ -9,6 +9,8 @@
  */
 
 import { ipcMain, shell, BrowserWindow } from "electron";
+import * as fs from "fs";
+import * as path from "path";
 import { IProjectMeta } from "./models/project.model";
 import { getConfig, addWatchedFolder, removeWatchedFolder, updatePreferences, recordScanTimestamp } from "./services/config.service";
 import { scanAllFolders } from "./services/scanner.service";
@@ -161,6 +163,41 @@ export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): 
     projectCache = backup.projects;
 
     return backup.projects;
+  });
+
+  // ═══════════════════════════════════════════
+  // FILESYSTEM CHANNELS
+  // ═══════════════════════════════════════════
+
+  ipcMain.handle("fs:readDir", async (_event, args: { dirPath: string }) => {
+    try {
+      const entries = fs.readdirSync(args.dirPath, { withFileTypes: true });
+      return entries
+        .map((entry) => {
+          const fullPath = path.join(args.dirPath, entry.name);
+          let size = 0;
+          let lastModified = new Date().toISOString();
+          try {
+            const stat = fs.statSync(fullPath);
+            size = stat.isFile() ? stat.size : 0;
+            lastModified = stat.mtime.toISOString();
+          } catch { /* skip unreadable entries */ }
+          return {
+            name: entry.name,
+            isDir: entry.isDirectory(),
+            size,
+            lastModified,
+          };
+        })
+        .filter((e) => !e.name.startsWith('.') && e.name !== 'node_modules' && e.name !== 'dist' && e.name !== 'release')
+        .sort((a, b) => {
+          // Folders first, then files alphabetically
+          if (a.isDir !== b.isDir) return a.isDir ? -1 : 1;
+          return a.name.localeCompare(b.name);
+        });
+    } catch (err) {
+      return [];
+    }
   });
 
   // ═══════════════════════════════════════════
