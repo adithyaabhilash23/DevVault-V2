@@ -73,19 +73,20 @@
   flex-wrap: wrap;
 }
 
-/* Meta row: tech · path on one compact line */
+/* Meta row: tech stack only */
 .ws-header__meta-row {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  overflow: hidden;
   min-width: 0;
 }
 
-.ws-path-sep {
-  color: var(--text-tertiary);
-  font-size: var(--font-xs);
-  flex-shrink: 0;
+/* Path row: dedicated line for project path */
+.ws-header__path-row {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .ws-breadcrumb {
@@ -138,22 +139,47 @@
 }
 
 /* ── 3-Column Body ──────────────────────────────────────── */
+/* Flex layout so dividers can sit between columns */
 .ws-body {
-  display: grid;
-  grid-template-columns: 220px 280px 1fr;
+  display: flex;
   flex: 1;
   overflow: hidden;
   min-height: 0;
 }
 
 .ws-col {
-  border-right: 1px solid var(--border-subtle);
+  border-right: none; /* borders handled by dividers */
   display: flex;
   flex-direction: column;
   overflow: hidden;
   min-height: 0;
+  flex-shrink: 0;
 }
-.ws-col:last-child { border-right: none; }
+.ws-col--detail { flex: 1; flex-shrink: 1; }
+
+/* Drag divider handle — Phase 2 + 5 */
+.ws-divider {
+  width: 4px;
+  background: transparent;
+  cursor: col-resize;
+  flex-shrink: 0;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+  position: relative;
+}
+.ws-divider:hover {
+  background: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.25);
+}
+.ws-divider:active {
+  background: rgba(139, 92, 246, 0.75);
+  box-shadow: 0 0 18px rgba(139, 92, 246, 0.35);
+}
+.ws-divider::after {
+  content: '';
+  position: absolute;
+  inset: 0 -3px;
+  z-index: 1;
+}
 
 /* Panel header bar (shared) */
 .ws-panel-header {
@@ -185,12 +211,22 @@
   font-size: var(--font-sm);
   color: var(--text-secondary);
   cursor: default;
-  border-radius: 4px;
-  transition: background var(--transition-fast), color var(--transition-fast);
+  border-radius: 6px;
+  border-left: 3px solid transparent;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
   white-space: nowrap;
   margin: 1px 4px;
 }
 .ws-tree__node:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+/* Phase 1 — Active tree node: vivid purple to match file rows */
+.ws-tree__node--active {
+  background: rgba(139, 92, 246, 0.16);
+  border-left: 3px solid var(--accent);
+  color: hsl(265, 85%, 82%);
+  box-shadow: inset 0 0 18px rgba(139, 92, 246, 0.18);
+}
+.ws-tree__node--active .ws-tree__label { color: hsl(265, 85%, 82%); font-weight: 500; }
 
 .ws-tree__arrow {
   font-size: 0.6rem;
@@ -208,6 +244,12 @@
 
 .ws-tree__label { flex: 1; overflow: hidden; text-overflow: ellipsis; }
 
+/* Phase 3 — SVG file icons (Explorer + file list) */
+.ws-file-icon {
+  flex-shrink: 0;
+  display: block;
+}
+
 /* ── Column 2: File List ────────────────────────────────── */
 .ws-col--files { background: var(--bg-surface); }
 
@@ -215,7 +257,7 @@
 
 .ws-file-row {
   display: grid;
-  grid-template-columns: 20px 1fr auto auto;
+  grid-template-columns: 18px 1fr auto auto;
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
@@ -228,9 +270,9 @@
 
 /* Selected file — vivid purple with glow */
 .ws-file-row--active {
-  background: hsl(265, 60%, 22%);
+  background: hsl(265, 55%, 20%);
   border-left: 2px solid hsl(265, 80%, 65%);
-  box-shadow: inset 0 0 12px hsla(265, 80%, 60%, 0.15);
+  box-shadow: inset 0 0 18px rgba(139,92,246,.25);
 }
 .ws-file-row--active .ws-file__name { color: hsl(265, 85%, 78%); font-weight: 500; }
 
@@ -374,16 +416,17 @@
 .ws-breadcrumb__crumb:hover { color: var(--accent); background: var(--accent-muted); }
 .ws-breadcrumb__crumb--cur { color: var(--text-secondary); cursor: default; pointer-events: none; }
 
-/* ── Folder Count Badge ──────────────────────────────────── */
+/* ── Folder Count Badge — Phase 4 ────────────────────────── */
 .ws-tree__count {
   font-size: 0.6rem;
   color: var(--text-tertiary);
-  background: var(--bg-hover);
+  background: transparent;
   border-radius: 8px;
-  padding: 0 5px;
-  margin-left: 4px;
+  padding: 0 3px;
+  margin-left: 3px;
   flex-shrink: 0;
   line-height: 1.6;
+  opacity: 0.65;
 }
 
 /* ── Preview Panel Base ──────────────────────────────────── */

@@ -4,23 +4,129 @@ const Workspace = (() => {
   let selectedFolderPath = null;
   let selectedFilePath = null;
   let expandedFolders = new Set();
+  
+  // ── Panel width persistence ───────────────────────────────────────────────
+  const WS_STORAGE_KEY = 'devvault_ws_panels';
+  const MIN_W = { tree: 180, files: 220, detail: 280 };
 
-  // ── File-Type Icon ────────────────────────────────────────────────────────
+  function loadPanelWidths() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(WS_STORAGE_KEY) || 'null');
+      return saved || { tree: 220, files: 280 }; // detail fills remaining
+    } catch { return { tree: 220, files: 280 }; }
+  }
+
+  function savePanelWidths(tree, files) {
+    try { localStorage.setItem(WS_STORAGE_KEY, JSON.stringify({ tree, files })); } catch {}
+  }
+
+  function initResizablePanels() {
+    const body  = DOM.id('ws-body');
+    const colTree   = DOM.qs('.ws-col--tree',   body);
+    const colFiles  = DOM.qs('.ws-col--files',  body);
+    const colDetail = DOM.qs('.ws-col--detail', body);
+    const divL  = DOM.id('ws-divider-l');
+    const divR  = DOM.id('ws-divider-r');
+    if (!body || !colTree || !colFiles || !colDetail || !divL || !divR) return;
+
+    // Restore saved widths
+    const saved = loadPanelWidths();
+    colTree.style.width  = saved.tree  + 'px';
+    colFiles.style.width = saved.files + 'px';
+
+    function makeDragger(divider, getLeft, getRight, setWidths) {
+      let startX, startL, startR;
+      divider.addEventListener('mousedown', (e) => {
+        startX = e.clientX;
+        startL = getLeft();
+        startR = getRight();
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+
+        function onMove(e) {
+          const dx = e.clientX - startX;
+          setWidths(startL + dx, startR - dx);
+        }
+        function onUp() {
+          document.body.style.cursor = '';
+          document.body.style.userSelect = '';
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+          // Persist after drag
+          savePanelWidths(
+            parseInt(colTree.style.width),
+            parseInt(colFiles.style.width)
+          );
+        }
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      });
+    }
+
+    // Left divider: tree ↔ files
+    makeDragger(
+      divL,
+      () => parseInt(colTree.style.width  || colTree.offsetWidth),
+      () => parseInt(colFiles.style.width || colFiles.offsetWidth),
+      (l, r) => {
+        if (l < MIN_W.tree || r < MIN_W.files) return;
+        colTree.style.width  = l + 'px';
+        colFiles.style.width = r + 'px';
+      }
+    );
+
+    // Right divider: files ↔ detail
+    makeDragger(
+      divR,
+      () => parseInt(colFiles.style.width  || colFiles.offsetWidth),
+      () => parseInt(colDetail.style.width || colDetail.offsetWidth),
+      (l, r) => {
+        if (l < MIN_W.files || r < MIN_W.detail) return;
+        colFiles.style.width  = l + 'px';
+        colDetail.style.width = r + 'px';
+        savePanelWidths(
+          parseInt(colTree.style.width),
+          parseInt(colFiles.style.width)
+        );
+      }
+    );
+  }
+
+  // ── File-Type Icon ─ Phase 3: VS Code-style SVG icons ────────────────────
   function fileTypeIcon(name, isDir) {
     if (isDir) return `<svg class="ws-tree__icon ws-tree__icon--folder" viewBox="0 0 16 16" fill="currentColor"><path d="M1.5 3A1.5 1.5 0 013 4.5h3.5l1.5 1.5H13A1.5 1.5 0 0114.5 7.5v5A1.5 1.5 0 0113 14H3a1.5 1.5 0 01-1.5-1.5V4.5A1.5 1.5 0 011.5 3z"/></svg>`;
     const ext = name.split('.').pop().toLowerCase();
-    const map = {
-      ts:   ['#4e94d0','TS'],  tsx: ['#4e94d0','TSX'], js: ['#f7df1e','JS'],
-      jsx:  ['#f7df1e','JSX'], json:['#f0c674','{}'],  md: ['#78bf8a','MD'],
-      html: ['#e34c26','HT'],  css: ['#264de4','CS'],  scss:['#c6538c','SC'],
-      svg:  ['#ff9900','SV'],  png: ['#a78bfa','IMG'], jpg: ['#a78bfa','IMG'],
-      jpeg: ['#a78bfa','IMG'], webp:['#a78bfa','IMG'], gif: ['#a78bfa','IMG'],
-      txt:  ['#9ca3af','TX'],  env: ['#facc15','EV'],  lock:['#6b7280','LK'],
-      yaml: ['#f97316','YML'],yml: ['#f97316','YML'],  sh:  ['#a3e635','SH'],
+
+    // SVG icon definitions: [color, svgPath]
+    const icons = {
+      ts:   ['#4e94d0', 'M3 2h10a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1zm1 5.5v1h2v4h1.5v-4H9v-1H4zm6.5 0c-.83 0-1.5.67-1.5 1.5v1c0 .28.22.5.5.5h1v.5c0 .28-.22.5-.5.5H9v1h.5c.83 0 1.5-.67 1.5-1.5v-1a.5.5 0 00-.5-.5h-1V9c0-.28.22-.5.5-.5h.5v-1h-.5z'],
+      tsx:  ['#4e94d0', 'M3 2h10a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1zm1 5.5v1h2v4h1.5v-4H9v-1H4zm6.5 0c-.83 0-1.5.67-1.5 1.5v1c0 .28.22.5.5.5h1v.5c0 .28-.22.5-.5.5H9v1h.5c.83 0 1.5-.67 1.5-1.5v-1a.5.5 0 00-.5-.5h-1V9c0-.28.22-.5.5-.5h.5v-1h-.5z'],
+      js:   ['#f0d04e', 'M3 2h10a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1zm4.5 5.5v4.25c0 .69-.56 1.25-1.25 1.25H5.5v-1.25H6A.25.25 0 006.25 12V7.5H7.5zM10 7.5c-.83 0-1.5.67-1.5 1.5v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V9c0-.83-.67-1.5-1.5-1.5zm0 1.25c.14 0 .25.11.25.25v1.5a.25.25 0 01-.5 0V9c0-.14.11-.25.25-.25z'],
+      jsx:  ['#f0d04e', 'M3 2h10a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V3a1 1 0 011-1zm4.5 5.5v4.25c0 .69-.56 1.25-1.25 1.25H5.5v-1.25H6A.25.25 0 006.25 12V7.5H7.5zM10 7.5c-.83 0-1.5.67-1.5 1.5v1.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V9c0-.83-.67-1.5-1.5-1.5zm0 1.25c.14 0 .25.11.25.25v1.5a.25.25 0 01-.5 0V9c0-.14.11-.25.25-.25z'],
+      json: ['#f0c674', 'M8 2a6 6 0 100 12A6 6 0 008 2zm0 1.5a4.5 4.5 0 110 9 4.5 4.5 0 010-9zM6.5 7a.5.5 0 00-.5.5v1a.5.5 0 00.5.5H7v.5a.5.5 0 001 0V9h.5a.5.5 0 000-1H8v-.5a.5.5 0 00-.5-.5h-1z'],
+      md:   ['#a78bfa', 'M2 4a1 1 0 011-1h10a1 1 0 011 1v8a1 1 0 01-1 1H3a1 1 0 01-1-1V4zm2 1v6h8V5H4zm1 1h2v1H5V6zm0 2h4v1H5V8zm0 2h3v1H5v-1z'],
+      html: ['#e8714a', 'M3 2l1 10 4 2 4-2 1-10H3zm2.2 2h5.6l-.2 2H5.4l.1 1.5h4.8l-.4 3.8L8 12l-1.9-.7-.1-1.3h1.5l.1.6.4.1.4-.1.2-1.6H5.4L5.2 4z'],
+      css:  ['#42a5f5', 'M3 2l1 10 4 2 4-2 1-10H3zm2.2 2h5.6l-.2 2H5.4l.1 1h4.6l-.4 4-1.7.5-1.7-.5-.1-1h1.5l.1.5h.2l.2-.1.1-1.4H5.6L5.2 4z'],
+      scss: ['#f06292', 'M8 2a6 6 0 100 12A6 6 0 008 2zm-.3 3.2c.9 0 1.6.3 2 .7l-.7.8c-.3-.3-.7-.5-1.3-.5-.5 0-.8.2-.8.5 0 .9 2.8.5 2.8 2.3 0 1-.8 1.8-2.2 1.8-.9 0-1.8-.3-2.3-.9l.7-.8c.4.4.9.7 1.6.7.6 0 .9-.2.9-.6 0-.9-2.8-.5-2.8-2.3 0-1 .8-1.7 2.1-1.7z'],
+      svg:  ['#ff9900', 'M8 2a6 6 0 100 12A6 6 0 008 2zm0 2c.3 0 .5.1.7.3L11 6.5l.3.5-.3.5-2.3 2.2c-.4.4-1 .4-1.4 0L5 7.5l-.3-.5.3-.5 2.3-2.2c.2-.2.4-.3.7-.3z'],
+      png:  ['#a78bfa', 'M4 3h8a1 1 0 011 1v8a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1zm0 1v5.5l2.5-2 2 2L11 7l1 1V4H4zm0 8h8v-1.5l-1-1-2.5 2.5-2-2L4 11.5V12z'],
+      jpg:  ['#a78bfa', 'M4 3h8a1 1 0 011 1v8a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1zm0 1v5.5l2.5-2 2 2L11 7l1 1V4H4zm0 8h8v-1.5l-1-1-2.5 2.5-2-2L4 11.5V12z'],
+      jpeg: ['#a78bfa', 'M4 3h8a1 1 0 011 1v8a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1zm0 1v5.5l2.5-2 2 2L11 7l1 1V4H4zm0 8h8v-1.5l-1-1-2.5 2.5-2-2L4 11.5V12z'],
+      webp: ['#a78bfa', 'M4 3h8a1 1 0 011 1v8a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1zm0 1v5.5l2.5-2 2 2L11 7l1 1V4H4zm0 8h8v-1.5l-1-1-2.5 2.5-2-2L4 11.5V12z'],
+      txt:  ['#9ca3af', 'M4 2h8a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1zm1 2v1h6V4H5zm0 2v1h6V6H5zm0 2v1h6V8H5zm0 2v1h4v-1H5z'],
+      env:  ['#facc15', 'M4 2h8a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1zm1 3v1h2V5H5zm0 2v1h6V7H5zm0 2v1h4V9H5zm0 2v1h3v-1H5z'],
+      yaml: ['#f97316', 'M4 2h8a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1zm3.5 3L6 7.5V12h1V8l1.5-3h-1zm1 0L10 7.5V12h-1V8L7.5 5h1z'],
+      yml:  ['#f97316', 'M4 2h8a1 1 0 011 1v10a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1zm3.5 3L6 7.5V12h1V8l1.5-3h-1zm1 0L10 7.5V12h-1V8L7.5 5h1z'],
     };
-    const [color, label] = map[ext] || ['#6b7280', '··'];
-    return `<span class="ws-file-type-badge" style="background:${color}18;color:${color};border-color:${color}44;">${label}</span>`;
+
+    if (icons[ext]) {
+      const [color, path] = icons[ext];
+      return `<svg class="ws-file-icon" viewBox="0 0 16 16" width="15" height="15" fill="${color}"><path d="${path}"/></svg>`;
+    }
+    // Generic file icon for unknown types
+    return `<svg class="ws-file-icon" viewBox="0 0 16 16" width="15" height="15" fill="#6b7280"><path d="M4 2h5.5L13 5.5V13a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1zm0 1v10h8V6H9V3H4zm6 0v2h2L10 3z"/></svg>`;
   }
+
 
   // ── Breadcrumb ────────────────────────────────────────────────────────────
   function updateBreadcrumb() {
@@ -65,7 +171,7 @@ const Workspace = (() => {
     const isOpen     = expandedFolders.has(node.path);
     const isSelected = selectedFolderPath === node.path && !selectedFilePath;
     const count      = node.children && node.children.length > 0
-      ? `<span class="ws-tree__count">${node.children.length}</span>` : '';
+      ? `<span class="ws-tree__count">(${node.children.length})</span>` : '';
     let html = `
       <div class="ws-tree__node${isSelected ? ' ws-tree__node--active' : ''}"
            data-path="${node.path}" style="padding-left:${depth * 14 + 8}px;">
@@ -377,12 +483,13 @@ const Workspace = (() => {
           </div>
           <div class="ws-header__meta-row">
             <span class="ws-tech-inline">${techInline}</span>
-            <span class="ws-path-sep">·</span>
+          </div>
+          <div class="ws-header__path-row">
             <span class="ws-path">${p.absolutePath}</span>
           </div>
         </div>
       </div>
-      <div class="ws-body">
+      <div class="ws-body" id="ws-body">
         <aside class="ws-col ws-col--tree">
           <div class="ws-panel-header">
             <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13" style="color:var(--accent)"><path d="M1.5 3A1.5 1.5 0 013 4.5h3.5l1.5 1.5H13A1.5 1.5 0 0114.5 7.5v5A1.5 1.5 0 0113 14H3a1.5 1.5 0 01-1.5-1.5V4.5A1.5 1.5 0 011.5 3z"/></svg>
@@ -390,6 +497,7 @@ const Workspace = (() => {
           </div>
           <div class="ws-tree" id="ws-tree"></div>
         </aside>
+        <div class="ws-divider" id="ws-divider-l" title="Drag to resize"></div>
         <aside class="ws-col ws-col--files">
           <div class="ws-panel-header">
             <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13" style="color:var(--accent)"><path d="M4 1h6l4 4v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1zm0 1v11h8V6H9V2H4zm6 0v3h3L10 2z"/></svg>
@@ -397,6 +505,7 @@ const Workspace = (() => {
           </div>
           <div class="ws-file-list" id="ws-file-list"><div class="ws-loading">Loading…</div></div>
         </aside>
+        <div class="ws-divider" id="ws-divider-r" title="Drag to resize"></div>
         <section class="ws-col ws-col--detail">
           <div class="ws-panel-header ws-panel-header--detail">
             <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13" style="color:var(--accent)"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 6v4m0-6v.5"/></svg>
@@ -410,6 +519,7 @@ const Workspace = (() => {
 
     wireDetailEvents(p);
     updateBreadcrumb();
+    initResizablePanels();
     renderTree(p.absolutePath).then(() => renderFileList(p.absolutePath));
   }
 
