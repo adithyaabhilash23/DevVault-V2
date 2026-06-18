@@ -11,7 +11,7 @@
  * 
  * Flow:
  * 1. Iterate all watched folders
- * 2. For each watched folder, read immediate children (depth 1 = project roots)
+ * 2. For each watched folder, recursively discover project directories up to maxDepth
  * 3. For each project candidate, run all detection services
  * 4. Merge computed data with existing user metadata
  * 5. Classify activity category
@@ -43,25 +43,17 @@ import { loadProjectMeta } from "./metadata.service";
 export async function scanAllFolders(
   watchedFolders: IWatchedFolder[],
   existingProjects: IProject[],
-  mainWindow?: BrowserWindow | null
+  mainWindow?: BrowserWindow | null,
+  maxDepth: number = 5
 ): Promise<IProject[]> {
   const allProjects: IProject[] = [];
   const existingMap = new Map(existingProjects.map((p) => [p.id, p]));
 
-  // Phase 1: Discover all project directories
+  // Phase 1: Recursively discover all project directories up to maxDepth
   const candidates: Array<{ folderName: string; absolutePath: string; watchedFolder: string }> = [];
 
   for (const watched of watchedFolders) {
-    const entries = await readDirectoryWithTypes(watched.path);
-    for (const entry of entries) {
-      if (entry.isDirectory() && !IGNORED_DIRECTORIES.has(entry.name)) {
-        candidates.push({
-          folderName: entry.name,
-          absolutePath: path.join(watched.path, entry.name),
-          watchedFolder: watched.path,
-        });
-      }
-    }
+    await discoverProjects(watched.path, watched.path, 0, maxDepth, candidates);
   }
 
   // Phase 2: Process each project candidate
@@ -85,6 +77,43 @@ export async function scanAllFolders(
   }
 
   return allProjects;
+}
+
+/**
+ * Recursively discover project directories within a watched folder.
+ *
+ * @param watchedRoot   - The top-level watched folder (used to tag each candidate)
+ * @param currentDir    - The directory being inspected in this call
+ * @param currentDepth  - How many levels below the watched root we currently are
+ * @param maxDepth      - Maximum levels to recurse (0 = immediate children only)
+ * @param candidates    - Mutable array that collects discovered directories
+ */
+async function discoverProjects(
+  watchedRoot: string,
+  currentDir: string,
+  currentDepth: number,
+  maxDepth: number,
+  candidates: Array<{ folderName: string; absolutePath: string; watchedFolder: string }>
+): Promise<void> {
+  if (currentDepth > maxDepth) return;
+
+  const entries = await readDirectoryWithTypes(currentDir);
+
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+    if (IGNORED_DIRECTORIES.has(entry.name)) continue;
+
+    const absolutePath = path.join(currentDir, entry.name);
+
+    candidates.push({
+      folderName: entry.name,
+      absolutePath,
+      watchedFolder: watchedRoot,
+    });
+
+    // Recurse into subdirectory
+    await discoverProjects(watchedRoot, absolutePath, currentDepth + 1, maxDepth, candidates);
+  }
 }
 
 /**
