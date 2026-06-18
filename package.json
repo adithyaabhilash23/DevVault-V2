@@ -11,10 +11,9 @@
   },
   "author": "",
   "license": "MIT",
-  "dependencies": {
-    "electron": "^35.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "electron": "^35.0.0",
     "typescript": "^5.8.0",
     "concurrently": "^9.1.0",
     "electron-builder": "^26.0.0"
