@@ -200,6 +200,17 @@ export function registerIpcHandlers(getMainWindow: () => BrowserWindow | null): 
     }
   });
 
+  ipcMain.handle("fs:readFile", async (_event, args: { filePath: string }) => {
+    try {
+      const stat = fs.statSync(args.filePath);
+      if (stat.size > 512 * 1024) return null; // > 512 KB — skip preview
+      return fs.readFileSync(args.filePath, "utf-8");
+    } catch {
+      return null; // binary or unreadable
+    }
+  });
+
+
   // ═══════════════════════════════════════════
   // NATIVE DIALOG CHANNELS
   // ═══════════════════════════════════════════

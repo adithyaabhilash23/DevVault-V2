@@ -35,5 +35,6 @@ const API = {
   selectFolder: () => window.devvault.dialog.selectFolder(),
 
   // Filesystem (read-only — workspace explorer)
-  readDir: (dirPath) => window.devvault.fs.readDir(dirPath),
+  readDir:  (dirPath)  => window.devvault.fs.readDir(dirPath),
+  readFile: (filePath) => window.devvault.fs.readFile(filePath),
 };

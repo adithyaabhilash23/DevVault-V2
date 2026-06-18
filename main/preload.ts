@@ -65,6 +65,7 @@ contextBridge.exposeInMainWorld("devvault", {
   // ── Filesystem (read-only, for Workspace explorer) ──
   fs: {
     readDir: (dirPath: string) => ipcRenderer.invoke("fs:readDir", { dirPath }),
+    readFile: (filePath: string) => ipcRenderer.invoke("fs:readFile", { filePath }),
   },
 });
 
