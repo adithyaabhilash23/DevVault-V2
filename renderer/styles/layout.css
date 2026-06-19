@@ -377,16 +377,40 @@ body {
 }
 
 /* ── Content header: inline stats ─────── */
+/* No boxes. No borders. No backgrounds.  */
+/* Plain accent-number + muted-label.     */
 .content__stats-bar {
   display: flex;
   align-items: center;
-  gap: 24px; /* wider separation between Projects / Favorites / Git Repos */
+  gap: 0; /* spacing handled by per-item padding + divider */
 }
 
 .content__stat {
   display: flex;
   align-items: center;
   gap: 5px;
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0 20px;
+  position: relative;
+}
+
+/* Thin vertical rule between items */
+.content__stat + .content__stat::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 14px;
+  width: 1px;
+  background: var(--border-default);
+}
+
+/* First item: no left padding (flush with density toggle) */
+.content__stat:first-child {
+  padding-left: 0;
 }
 
 .content__stat-value {
@@ -400,9 +424,10 @@ body {
 
 .content__stat-label {
   font-size: var(--font-sm);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   font-weight: 500;
 }
+
 
 /* ═══════════════════════════════════════ */
 /* DENSITY TOGGLE                          */
