@@ -39,7 +39,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-1) var(--space-1) var(--space-2); /* tighter \u2014 compact logo area */
+  padding: var(--space-1) var(--space-1) var(--space-2);
+  /* tighter \u2014 compact logo area */
   border-bottom: 1px solid var(--border-subtle);
   margin-bottom: var(--space-2);
   flex-shrink: 0;
@@ -264,7 +265,8 @@ body {
 /* ── Section 3: Footer ───────────────── */
 .sidebar__footer {
   flex-shrink: 0;
-  margin-top: auto; /* push flush to bottom */
+  margin-top: auto;
+  /* push flush to bottom */
   padding-top: var(--space-3);
   border-top: 1px solid var(--border-subtle);
   display: flex;
@@ -291,15 +293,17 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px var(--space-4);
+  padding: 8px var(--space-4);
   border-bottom: 1px solid var(--border-subtle);
-  min-height: 36px;
+  min-height: 60px;
   gap: var(--space-4);
   flex-shrink: 0;
   background: var(--bg-surface);
 }
 
-.content__header[hidden] { display: none !important; }
+.content__header[hidden] {
+  display: none !important;
+}
 
 .content__header-left {
   display: flex;
@@ -318,21 +322,24 @@ body {
 .content__header-right {
   display: flex;
   align-items: center;
-  gap: var(--space-5); /* more breathing room between density and stats */
+  gap: var(--space-5);
+  /* more breathing room between density and stats */
 }
 
 /* Legacy stats container — hidden, kept for JS compat */
-.content__stats { display: none; }
+.content__stats {
+  display: none;
+}
 
 /* ── Content header: Search box ──────── */
 .content__search {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 6px;
   background: var(--bg-elevated);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid rgba(26, 29, 42, 0.7); /* slightly softer than border-subtle */
   border-radius: var(--radius-sm);
-  padding: 5px var(--space-2);
+  padding: 4px 10px; /* slimmer height, more left breathing room */
   min-width: 200px;
   transition: border-color var(--transition-fast);
 }
@@ -343,10 +350,11 @@ body {
 }
 
 .content__search-icon {
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
   color: var(--text-tertiary);
   flex-shrink: 0;
+  opacity: 0.7;
 }
 
 .content__search-input {
@@ -357,11 +365,13 @@ body {
   color: var(--text-primary);
   font-size: var(--font-md);
   font-family: var(--font-body);
+  line-height: 1; /* prevents extra height from line-height */
   min-width: 0;
 }
 
 .content__search-input::placeholder {
   color: var(--text-tertiary);
+  opacity: 0.8;
 }
 
 /* ── Content header: filter row ───────── */
@@ -382,7 +392,8 @@ body {
 .content__stats-bar {
   display: flex;
   align-items: center;
-  gap: 0; /* spacing handled by per-item padding + divider */
+  gap: 0;
+  /* spacing handled by per-item padding + divider */
 }
 
 .content__stat {
@@ -397,7 +408,7 @@ body {
 }
 
 /* Thin vertical rule between items */
-.content__stat + .content__stat::before {
+.content__stat+.content__stat::before {
   content: '';
   position: absolute;
   left: 0;
@@ -489,7 +500,8 @@ body {
 .project-grid {
   display: grid;
   grid-template-columns: repeat(var(--grid-cols, 4), 1fr);
-  gap: var(--space-6); /* 24px — more breathable layout */
+  gap: var(--space-6);
+  /* 24px — more breathable layout */
   align-items: stretch;
 }
 
