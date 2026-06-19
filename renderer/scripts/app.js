@@ -1,6 +1,7 @@
 /**
- * DevVault V2 — App Boot Sequence
+ * DevVault V3.1A — App Boot Sequence
  * Initializes the application, wires up navigation, and subscribes to state.
+ * Scan-progress bar is now inside the sidebar footer.
  */
 
 // @ts-nocheck
@@ -9,12 +10,12 @@
 
   // ── View Map ──────────────────────────
   const VIEWS = {
-    dashboard: { el: 'view-dashboard',  render: () => DashboardView.render() },
-    timeline:  { el: 'view-timeline',   render: () => TimelineView.render() },
-    families:  { el: 'view-families',   render: () => FamiliesView.render() },
-    compare:   { el: 'view-compare',    render: () => CompareView.render() },
-    settings:  { el: 'view-settings',   render: () => SettingsView.render() },
-    workspace: { el: 'view-workspace',  render: () => Workspace.render() },
+    dashboard: { el: 'view-dashboard',  label: 'Dashboard',  render: () => DashboardView.render() },
+    timeline:  { el: 'view-timeline',   label: 'Timeline',   render: () => TimelineView.render() },
+    families:  { el: 'view-families',   label: 'Families',   render: () => FamiliesView.render() },
+    compare:   { el: 'view-compare',    label: 'Compare',    render: () => CompareView.render() },
+    settings:  { el: 'view-settings',   label: 'Settings',   render: () => SettingsView.render() },
+    workspace: { el: 'view-workspace',  label: null,         render: () => Workspace.render() },
   };
 
   // ── Navigation ────────────────────────
@@ -36,11 +37,18 @@
       const el = DOM.id(cfg.el);
       if (el) el.hidden = key !== view;
     });
-    // Hide the top search/filter header in workspace — workspace has its own header
+    // Hide the top content header in workspace (workspace has its own header)
     const contentHeader = DOM.id('content-header');
-    const scanProgress  = DOM.id('scan-progress');
     if (contentHeader) contentHeader.hidden = view === 'workspace';
-    if (scanProgress && view === 'workspace') scanProgress.hidden = true;
+
+    // Update the view title in content header
+    const titleEl = DOM.id('content-view-title');
+    if (titleEl) titleEl.textContent = VIEWS[view]?.label || '';
+
+    // Show/hide density toggle (dashboard only)
+    const densityToggle = DOM.id('density-toggle');
+    if (densityToggle) densityToggle.hidden = view !== 'dashboard';
+
     // Render active view
     const v = VIEWS[view];
     if (v) v.render();
@@ -61,20 +69,15 @@
   State.on('filterAI', () => DashboardView.render());
   State.on('filterActivity', () => DashboardView.render());
 
-  // ── Refresh Vault Button ──────────────
+  // ── Refresh Vault Button ────────────────────
+  // Scan-progress UI removed (V3.1B). Scanner IPC unchanged.
   DOM.id('btn-refresh-vault').addEventListener('click', async () => {
     State.set({ isScanning: true });
-    const progress = DOM.id('scan-progress');
-    const progressFill = DOM.id('scan-progress-fill');
-    const progressText = DOM.id('scan-progress-text');
-    DOM.show(progress);
+    const btn = DOM.id('btn-refresh-vault');
+    if (btn) btn.disabled = true;
 
-    // Listen for progress updates
-    API.onScanProgress(({ current, total, folder }) => {
-      const pct = Math.round((current / total) * 100);
-      progressFill.style.width = `${pct}%`;
-      progressText.textContent = `Scanning ${folder}... (${current}/${total})`;
-    });
+    // Progress events still consumed (keeps IPC clean), just not shown in UI
+    API.onScanProgress(() => {});
 
     try {
       const projects = await API.refreshVault();
@@ -85,13 +88,15 @@
       State.set({ isScanning: false });
     } finally {
       API.offScanProgress();
-      DOM.hide(progress);
-      progressFill.style.width = '0%';
+      if (btn) btn.disabled = false;
     }
   });
 
   // ── Initialize ────────────────────────
   SearchBar.init();
+
+  // Initialize density toggle
+  DashboardView.initDensityToggle();
 
   // Load initial data
   try {

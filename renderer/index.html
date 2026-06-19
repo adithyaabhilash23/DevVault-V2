@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DevVault — Developer Memory System</title>
+  <title>DevVault — Developer Operating System</title>
   <meta name="description" content="Track, organize, and remember all your development projects.">
 
   <!-- Design System -->
@@ -14,25 +14,69 @@
   <link rel="stylesheet" href="styles/views.css">
   <link rel="stylesheet" href="styles/animations.css">
 
-  <!-- Google Font -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Fonts loaded via base.css @import -->
 </head>
 <body>
 
   <!-- ═══════════════════════════════════════ -->
-  <!-- SIDEBAR NAVIGATION -->
+  <!-- SIDEBAR                                  -->
   <!-- ═══════════════════════════════════════ -->
   <aside class="sidebar" id="sidebar">
+
+    <!-- SECTION 1 — Brand -->
     <div class="sidebar__header">
       <div class="sidebar__logo">
         <span class="sidebar__logo-icon">◆</span>
         <h1 class="sidebar__title">DevVault</h1>
       </div>
-      <span class="sidebar__version">v2.0</span>
+      <span class="sidebar__version">v3.1</span>
     </div>
 
+    <!-- SECTION 2 — Filters -->
+    <div class="sidebar__section">
+      <div class="sidebar__section-label">Filters</div>
+
+      <!-- Search -->
+      <div class="sidebar__search" id="search-bar">
+        <svg class="sidebar__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="sidebar__search-input" id="search-input" placeholder="Search projects…" autocomplete="off">
+      </div>
+
+      <!-- Filter dropdowns -->
+      <div class="sidebar__filters">
+        <select class="sidebar__filter-select" id="filter-tech">
+          <option value="">All Tech</option>
+        </select>
+        <select class="sidebar__filter-select" id="filter-ai">
+          <option value="">All AI</option>
+        </select>
+        <select class="sidebar__filter-select" id="filter-activity">
+          <option value="">All Activity</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- SECTION 3 — Quick Stats -->
+    <div class="sidebar__section">
+      <div class="sidebar__section-label">Vault Stats</div>
+      <div class="sidebar__stats" id="sidebar-stats">
+        <!-- Populated by DashboardView.updateStats() -->
+        <div class="sidebar__stat-card">
+          <span class="sidebar__stat-value" id="stat-projects">—</span>
+          <span class="sidebar__stat-label">Projects</span>
+        </div>
+        <div class="sidebar__stat-card">
+          <span class="sidebar__stat-value" id="stat-favorites">—</span>
+          <span class="sidebar__stat-label">Favorites</span>
+        </div>
+        <div class="sidebar__stat-card">
+          <span class="sidebar__stat-value" id="stat-git">—</span>
+          <span class="sidebar__stat-label">Git Repos</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4 — Navigation -->
     <nav class="sidebar__nav">
       <button class="sidebar__nav-item sidebar__nav-item--active" data-view="dashboard" id="nav-dashboard">
         <svg class="sidebar__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -56,6 +100,7 @@
       </button>
     </nav>
 
+    <!-- SECTION 5 — Footer: Refresh button -->
     <div class="sidebar__footer">
       <button class="btn btn--primary btn--full" id="btn-refresh-vault">
         <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
@@ -65,38 +110,28 @@
   </aside>
 
   <!-- ═══════════════════════════════════════ -->
-  <!-- MAIN CONTENT AREA -->
+  <!-- MAIN CONTENT AREA                       -->
   <!-- ═══════════════════════════════════════ -->
   <main class="content" id="content">
-    <!-- Top bar with search and stats -->
+
+    <!-- Content header: kept in DOM for app.js toggling logic (workspace hides it) -->
+    <!-- On the dashboard it holds only the density toggle -->
     <header class="content__header" id="content-header">
-      <div class="search-bar" id="search-bar">
-        <svg class="search-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" class="search-bar__input" id="search-input" placeholder="Search projects...">
-        <div class="search-bar__filters">
-          <select class="search-bar__select" id="filter-tech">
-            <option value="">All Tech</option>
-          </select>
-          <select class="search-bar__select" id="filter-ai">
-            <option value="">All AI</option>
-          </select>
-          <select class="search-bar__select" id="filter-activity">
-            <option value="">All Activity</option>
-          </select>
-        </div>
+      <div class="content__header-left">
+        <!-- View title injected by JS -->
+        <span class="content__view-title" id="content-view-title">Dashboard</span>
       </div>
-      <div class="content__stats" id="content-stats">
-        <!-- Populated by JS -->
+      <div class="content__header-right">
+        <!-- Grid density toggle (dashboard only) -->
+        <div class="density-toggle" id="density-toggle" title="Grid columns">
+          <button class="density-toggle__btn" data-cols="3" id="density-3">3</button>
+          <button class="density-toggle__btn density-toggle__btn--active" data-cols="4" id="density-4">4</button>
+          <button class="density-toggle__btn" data-cols="5" id="density-5">5</button>
+        </div>
+        <!-- Legacy stats target kept for JS compatibility (now hidden) -->
+        <div class="content__stats" id="content-stats" hidden></div>
       </div>
     </header>
-
-    <!-- Scan progress bar (hidden by default) -->
-    <div class="scan-progress" id="scan-progress" hidden>
-      <div class="scan-progress__bar">
-        <div class="scan-progress__fill" id="scan-progress-fill"></div>
-      </div>
-      <span class="scan-progress__text" id="scan-progress-text">Scanning...</span>
-    </div>
 
     <!-- View containers (one visible at a time) -->
     <section class="view" id="view-dashboard">
@@ -138,7 +173,7 @@
   </main>
 
   <!-- ═══════════════════════════════════════ -->
-  <!-- DRAWER (Slide-in detail panel) -->
+  <!-- DRAWER (Slide-in detail panel)          -->
   <!-- ═══════════════════════════════════════ -->
   <div class="drawer-overlay" id="drawer-overlay" hidden></div>
   <aside class="drawer" id="drawer" hidden>
@@ -148,12 +183,12 @@
   </aside>
 
   <!-- ═══════════════════════════════════════ -->
-  <!-- TOAST CONTAINER -->
+  <!-- TOAST CONTAINER                         -->
   <!-- ═══════════════════════════════════════ -->
   <div class="toast-container" id="toast-container"></div>
 
   <!-- ═══════════════════════════════════════ -->
-  <!-- MODAL CONTAINER -->
+  <!-- MODAL CONTAINER                         -->
   <!-- ═══════════════════════════════════════ -->
   <div class="modal-overlay" id="modal-overlay" hidden>
     <div class="modal" id="modal">
@@ -162,7 +197,7 @@
   </div>
 
   <!-- ═══════════════════════════════════════ -->
-  <!-- WELCOME/EMPTY STATE -->
+  <!-- WELCOME/EMPTY STATE                     -->
   <!-- ═══════════════════════════════════════ -->
   <template id="template-empty-state">
     <div class="empty-state">

@@ -256,7 +256,12 @@ const Workspace = (() => {
     let entries = [];
     try { entries = await API.readDir(dirPath); } catch (_) {}
     if (entries.length === 0) {
-      panel.innerHTML = '<div class="ws-empty-dir">Empty folder</div>';
+      panel.innerHTML = `<div class="ws-empty-dir">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.2">
+          <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+        </svg>
+        <span>This folder is empty</span>
+      </div>`;
       return;
     }
     panel.innerHTML = entries.map((f) => `
@@ -335,10 +340,11 @@ const Workspace = (() => {
     const panel = DOM.id('ws-detail-content');
     if (!panel) return;
     const ext  = filePath.split('.').pop().toLowerCase();
+    const name = filePath.split(/[\\/]/).pop();
     const imgs = ['png','jpg','jpeg','webp','svg','gif'];
     if (imgs.includes(ext)) {
       panel.innerHTML = `<div class="ws-preview ws-preview--image">
-        <div class="ws-preview__label">${ext.toUpperCase()} Preview</div>
+        <div class="ws-preview__label">${fileTypeIcon(name, false)} ${name} <span class="ws-preview__type-badge">${ext.toUpperCase()}</span></div>
         <img src="file://${filePath}" class="ws-preview__img" alt="preview">
       </div>`;
       return;
@@ -346,20 +352,34 @@ const Workspace = (() => {
     panel.innerHTML = '<div class="ws-loading">Loading preview…</div>';
     const content = await API.readFile(filePath);
     if (content === null) {
-      panel.innerHTML = `<div class="ws-preview ws-preview--na"><span class="ws-preview__icon">◻</span><div>No preview available</div><div class="ws-preview__sub">Binary or file too large</div></div>`;
+      panel.innerHTML = `<div class="ws-preview ws-preview--na">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.2">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>
+        </svg>
+        <div style="font-weight:500;color:var(--text-secondary)">No preview available</div>
+        <div class="ws-preview__sub">Binary or file too large</div>
+      </div>`;
       return;
     }
-    const name = filePath.split(/[\\/]/).pop();
     const codeExts = ['ts','tsx','js','jsx','html','css','scss','txt','env','sh','yaml','yml','toml','gitignore'];
     if (ext === 'md') {
-      panel.innerHTML = `<div class="ws-preview ws-preview--md"><div class="ws-md-body">${simpleMarkdown(content)}</div></div>`;
+      panel.innerHTML = `<div class="ws-preview ws-preview--md">
+        <div class="ws-preview__label">${fileTypeIcon(name, false)} ${name} <span class="ws-preview__type-badge">Markdown</span></div>
+        <div class="ws-md-body">${simpleMarkdown(content)}</div>
+      </div>`;
     } else if (codeExts.includes(ext) || ext === 'json') {
       panel.innerHTML = `<div class="ws-preview ws-preview--code">
-        <div class="ws-preview__label">${name}</div>
+        <div class="ws-preview__label">${fileTypeIcon(name, false)} ${name} <span class="ws-preview__type-badge">${ext.toUpperCase()}</span></div>
         <pre class="ws-preview__code"><code>${syntaxHighlight(content, ext)}</code></pre>
       </div>`;
     } else {
-      panel.innerHTML = `<div class="ws-preview ws-preview--na"><span class="ws-preview__icon">◻</span><div>No preview available</div><div class="ws-preview__sub">.${ext} not supported</div></div>`;
+      panel.innerHTML = `<div class="ws-preview ws-preview--na">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.2">
+          <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+        </svg>
+        <div style="font-weight:500;color:var(--text-secondary)">No preview available</div>
+        <div class="ws-preview__sub">.${ext} files are not supported</div>
+      </div>`;
     }
   }
 
@@ -467,7 +487,14 @@ const Workspace = (() => {
     currentProject = p;
     const container = DOM.id('workspace-container');
     if (!container) return;
-    const techInline = (p.techStack||[]).join(' · ') || 'No tech detected';
+
+    // Line 2: Tech badges as individual pills
+    const techBadges = (p.techStack||[]).map(t => `<span class="ws-tech-badge">${t}</span>`).join('') || '<span class="ws-tech-badge" style="opacity:0.4">No tech detected</span>';
+
+    // Line 1: Git status badge
+    const gitStatus = p.hasGit && p.gitInfo
+      ? `<span class="badge badge--git" style="font-size:var(--font-xs)">${Icons.git} ${p.gitInfo.branch}${p.gitInfo.isDirty ? ' •' : ''}</span>`
+      : (p.hasGit ? '<span class="badge badge--git">Git</span>' : '');
 
     container.innerHTML = `
       <div class="ws-header">
@@ -476,40 +503,45 @@ const Workspace = (() => {
           <div class="ws-header__title-row">
             <h1 class="ws-title">${p.folderName}</h1>
             <div class="ws-header__badges">
-              ${p.hasGit?'<span class="badge badge--git">Git</span>':''}
+              ${gitStatus}
               ${p.hasVercel?'<span class="badge badge--vercel">Vercel</span>':''}
-              ${p.isFavorite?'<span style="color:hsl(45,95%,55%);font-size:1.1rem;">★</span>':''}
+              ${p.isFavorite?'<span style="color:hsl(42,85%,55%);font-size:0.9rem;line-height:1">★</span>':''}
             </div>
           </div>
           <div class="ws-header__meta-row">
-            <span class="ws-tech-inline">${techInline}</span>
+            ${techBadges}
           </div>
           <div class="ws-header__path-row">
             <span class="ws-path">${p.absolutePath}</span>
+            <div class="ws-header__stats">
+              <span>Modified <strong>${Format.relativeTime(p.lastModified)}</strong></span>
+              <span>${Format.bytes(p.totalSizeBytes)}</span>
+              <span>${Format.number(p.fileCount)} files</span>
+            </div>
           </div>
         </div>
       </div>
       <div class="ws-body" id="ws-body">
         <aside class="ws-col ws-col--tree">
           <div class="ws-panel-header">
-            <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13" style="color:var(--accent)"><path d="M1.5 3A1.5 1.5 0 013 4.5h3.5l1.5 1.5H13A1.5 1.5 0 0114.5 7.5v5A1.5 1.5 0 0113 14H3a1.5 1.5 0 01-1.5-1.5V4.5A1.5 1.5 0 011.5 3z"/></svg>
+            <svg viewBox="0 0 16 16" fill="currentColor" width="12" height="12" style="color:var(--accent)"><path d="M1.5 3A1.5 1.5 0 013 4.5h3.5l1.5 1.5H13A1.5 1.5 0 0114.5 7.5v5A1.5 1.5 0 0113 14H3a1.5 1.5 0 01-1.5-1.5V4.5A1.5 1.5 0 011.5 3z"/></svg>
             <span>Explorer</span>
           </div>
           <div class="ws-tree" id="ws-tree"></div>
         </aside>
-        <div class="ws-divider" id="ws-divider-l" title="Drag to resize"></div>
+        <div class="ws-divider" id="ws-divider-l"></div>
         <aside class="ws-col ws-col--files">
           <div class="ws-panel-header">
-            <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13" style="color:var(--accent)"><path d="M4 1h6l4 4v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1zm0 1v11h8V6H9V2H4zm6 0v3h3L10 2z"/></svg>
+            <svg viewBox="0 0 16 16" fill="currentColor" width="12" height="12" style="color:var(--accent)"><path d="M4 1h6l4 4v9a1 1 0 01-1 1H3a1 1 0 01-1-1V2a1 1 0 011-1zm0 1v11h8V6H9V2H4zm6 0v3h3L10 2z"/></svg>
             <span>Files</span>
           </div>
           <div class="ws-file-list" id="ws-file-list"><div class="ws-loading">Loading…</div></div>
         </aside>
-        <div class="ws-divider" id="ws-divider-r" title="Drag to resize"></div>
+        <div class="ws-divider" id="ws-divider-r"></div>
         <section class="ws-col ws-col--detail">
           <div class="ws-panel-header ws-panel-header--detail">
-            <svg viewBox="0 0 16 16" fill="currentColor" width="13" height="13" style="color:var(--accent)"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 6v4m0-6v.5"/></svg>
-            <span id="ws-detail-label">Project Info</span>
+            <svg viewBox="0 0 16 16" fill="none" width="12" height="12" style="color:var(--accent)"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M8 6v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.5" r="0.5" fill="currentColor"/></svg>
+            <span id="ws-detail-label">Details</span>
           </div>
           <div class="ws-detail" id="ws-detail-content">
             ${renderDetailPanel(p)}

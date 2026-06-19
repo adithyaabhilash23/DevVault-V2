@@ -1,13 +1,47 @@
 /**
- * DevVault V2 — Dashboard View
- * Main project grid/list with search, filter, sort.
+ * DevVault V3.1A — Dashboard View
+ * Main project grid with grid-density toggle.
+ * Stats now written to sidebar elements.
  */
 
 // @ts-nocheck
 const DashboardView = (() => {
+  // ── Grid Density ────────────────────────────────────────
+  const DENSITY_KEY = 'devvault_grid_cols';
+  const DEFAULT_COLS = 4;
+
+  function getSavedCols() {
+    try {
+      const v = parseInt(localStorage.getItem(DENSITY_KEY));
+      return [3, 4, 5].includes(v) ? v : DEFAULT_COLS;
+    } catch { return DEFAULT_COLS; }
+  }
+
+  function setCols(n) {
+    try { localStorage.setItem(DENSITY_KEY, String(n)); } catch {}
+    document.documentElement.style.setProperty('--grid-cols', String(n));
+    // Update toggle button active state
+    DOM.qsa('.density-toggle__btn').forEach(btn => {
+      btn.classList.toggle('density-toggle__btn--active', parseInt(btn.dataset.cols) === n);
+    });
+  }
+
+  function initDensityToggle() {
+    const cols = getSavedCols();
+    setCols(cols);
+    DOM.qsa('.density-toggle__btn').forEach(btn => {
+      btn.addEventListener('click', () => setCols(parseInt(btn.dataset.cols)));
+    });
+  }
+
+  // ── Render ──────────────────────────────────────────────
   function render() {
     const grid = DOM.id('project-grid');
     DOM.clear(grid);
+
+    // Apply persisted density
+    const cols = getSavedCols();
+    document.documentElement.style.setProperty('--grid-cols', String(cols));
 
     const projects = State.getFilteredProjects();
 
@@ -21,6 +55,7 @@ const DashboardView = (() => {
           document.querySelector('[data-view="settings"]').click();
         });
       }
+      updateStats([]);
       return;
     }
 
@@ -37,29 +72,40 @@ const DashboardView = (() => {
     updateStats(projects);
   }
 
+  // ── Stats → Sidebar ─────────────────────────────────────
   function updateStats(projects) {
-    const statsEl = DOM.id('content-stats');
-    if (!statsEl) return;
-
-    const total = projects.length;
+    const total     = projects.length;
     const favorites = projects.filter(p => p.isFavorite).length;
-    const withGit = projects.filter(p => p.hasGit).length;
+    const withGit   = projects.filter(p => p.hasGit).length;
 
-    statsEl.innerHTML = `
-      <div class="stat-card">
-        <span class="stat-card__value">${total}</span>
-        <span class="stat-card__label">Projects</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-card__value">${favorites}</span>
-        <span class="stat-card__label">Favorites</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-card__value">${withGit}</span>
-        <span class="stat-card__label">Git Repos</span>
-      </div>
-    `;
+    // Write to sidebar stat elements
+    const elProjects  = DOM.id('stat-projects');
+    const elFavorites = DOM.id('stat-favorites');
+    const elGit       = DOM.id('stat-git');
+    if (elProjects)  elProjects.textContent  = total;
+    if (elFavorites) elFavorites.textContent = favorites;
+    if (elGit)       elGit.textContent       = withGit;
+
+    // Keep legacy content-stats hidden but populated (for external compat)
+    const statsEl = DOM.id('content-stats');
+    if (statsEl) {
+      statsEl.innerHTML = `
+        <div class="stat-card">
+          <span class="stat-card__value">${total}</span>
+          <span class="stat-card__label">Projects</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__value">${favorites}</span>
+          <span class="stat-card__label">Favorites</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__value">${withGit}</span>
+          <span class="stat-card__label">Git Repos</span>
+        </div>
+      `;
+    }
   }
 
-  return { render };
+  // Expose initDensityToggle so app.js can call it once at boot
+  return { render, initDensityToggle };
 })();
