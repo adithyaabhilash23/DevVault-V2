@@ -32,51 +32,7 @@
       <span class="sidebar__version">v3.2H.0</span>
     </div>
 
-    <!-- SECTION 2 — Filters -->
-    <div class="sidebar__section">
-      <div class="sidebar__section-label">Filters</div>
-
-      <!-- Search -->
-      <div class="sidebar__search" id="search-bar">
-        <svg class="sidebar__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" class="sidebar__search-input" id="search-input" placeholder="Search projects…" autocomplete="off">
-      </div>
-
-      <!-- Filter dropdowns -->
-      <div class="sidebar__filters">
-        <select class="sidebar__filter-select" id="filter-tech">
-          <option value="">All Tech</option>
-        </select>
-        <select class="sidebar__filter-select" id="filter-ai">
-          <option value="">All AI</option>
-        </select>
-        <select class="sidebar__filter-select" id="filter-activity">
-          <option value="">All Activity</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- SECTION 3 — Quick Stats -->
-    <div class="sidebar__section">
-      <div class="sidebar__section-label">Vault Stats</div>
-      <div class="sidebar__stats" id="sidebar-stats">
-        <!-- Populated by DashboardView.updateStats() -->
-        <div class="sidebar__stat-card">
-          <span class="sidebar__stat-value" id="stat-projects">—</span>
-          <span class="sidebar__stat-label">Projects</span>
-        </div>
-        <div class="sidebar__stat-card">
-          <span class="sidebar__stat-value" id="stat-favorites">—</span>
-          <span class="sidebar__stat-label">Favorites</span>
-        </div>
-        <div class="sidebar__stat-card">
-          <span class="sidebar__stat-value" id="stat-git">—</span>
-          <span class="sidebar__stat-label">Git Repos</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- SECTION 4 — Navigation -->
+    <!-- SECTION 2 — Navigation (directly under brand) -->
     <nav class="sidebar__nav">
       <button class="sidebar__nav-item sidebar__nav-item--active" data-view="dashboard" id="nav-dashboard">
         <svg class="sidebar__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -104,7 +60,7 @@
       </button>
     </nav>
 
-    <!-- SECTION 5 — Footer: Refresh button -->
+    <!-- SECTION 3 — Footer: Refresh button -->
     <div class="sidebar__footer">
       <button class="btn btn--primary btn--full" id="btn-refresh-vault">
         <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
@@ -118,22 +74,50 @@
   <!-- ═══════════════════════════════════════ -->
   <main class="content" id="content">
 
-    <!-- Content header: kept in DOM for app.js toggling logic (workspace hides it) -->
-    <!-- On the dashboard it holds only the density toggle -->
+    <!-- Content header: left=search+filters | right=density+stats -->
     <header class="content__header" id="content-header">
+      <!-- LEFT: Search bar + filter dropdowns (one horizontal row) -->
       <div class="content__header-left">
-        <!-- View title injected by JS -->
-        <span class="content__view-title" id="content-view-title">Dashboard</span>
+        <div class="content__search" id="search-bar">
+          <svg class="content__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="content__search-input" id="search-input" placeholder="Search projects…" autocomplete="off">
+        </div>
+        <div class="content__header-filters">
+          <select class="sidebar__filter-select content__filter-select" id="filter-tech">
+            <option value="">All Tech</option>
+          </select>
+          <select class="sidebar__filter-select content__filter-select" id="filter-ai">
+            <option value="">All AI</option>
+          </select>
+          <select class="sidebar__filter-select content__filter-select" id="filter-activity">
+            <option value="">All Activity</option>
+          </select>
+        </div>
       </div>
+      <!-- RIGHT: Density buttons then inline stats -->
       <div class="content__header-right">
-        <!-- Grid density toggle (dashboard only) -->
         <div class="density-toggle" id="density-toggle" title="Grid columns">
           <button class="density-toggle__btn" data-cols="3" id="density-3">3</button>
           <button class="density-toggle__btn density-toggle__btn--active" data-cols="4" id="density-4">4</button>
           <button class="density-toggle__btn" data-cols="5" id="density-5">5</button>
         </div>
-        <!-- Legacy stats target kept for JS compatibility (now hidden) -->
+        <div class="content__stats-bar">
+          <div class="content__stat">
+            <span class="content__stat-value" id="stat-projects">—</span>
+            <span class="content__stat-label">Projects</span>
+          </div>
+          <div class="content__stat">
+            <span class="content__stat-value" id="stat-favorites">—</span>
+            <span class="content__stat-label">Favorites</span>
+          </div>
+          <div class="content__stat">
+            <span class="content__stat-value" id="stat-git">—</span>
+            <span class="content__stat-label">Git Repos</span>
+          </div>
+        </div>
+        <!-- Legacy: kept for JS compat, visually hidden -->
         <div class="content__stats" id="content-stats" hidden></div>
+        <span id="content-view-title" hidden></span>
       </div>
     </header>
 
