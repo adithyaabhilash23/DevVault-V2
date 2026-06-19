@@ -150,7 +150,7 @@ ul, ol { list-style: none; }
   --font-3xl: 1.75rem;     /* 28px */
 
   /* Layout — UNCHANGED */
-  --sidebar-width: 270px;
+  --sidebar-width: 180px;
   --header-height: 56px;
   --drawer-width: 480px;
   --statusbar-height: 26px;

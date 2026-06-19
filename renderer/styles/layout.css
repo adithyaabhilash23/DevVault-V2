@@ -39,9 +39,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-2) var(--space-1) var(--space-3);
+  padding: var(--space-1) var(--space-1) var(--space-2); /* tighter \u2014 compact logo area */
   border-bottom: 1px solid var(--border-subtle);
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-2);
   flex-shrink: 0;
 }
 
@@ -261,9 +261,10 @@ body {
   opacity: 1;
 }
 
-/* ── Section 5: Footer ───────────────── */
+/* ── Section 3: Footer ───────────────── */
 .sidebar__footer {
   flex-shrink: 0;
+  margin-top: auto; /* push flush to bottom */
   padding-top: var(--space-3);
   border-top: 1px solid var(--border-subtle);
   display: flex;
@@ -285,14 +286,14 @@ body {
   background: var(--bg-base);
 }
 
-/* Content header: minimal — just view title + density toggle */
+/* Content header: compact — matches old UI proportions */
 .content__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-3) var(--space-5);
+  padding: var(--space-2) var(--space-4);
   border-bottom: 1px solid var(--border-subtle);
-  min-height: 48px;
+  min-height: 42px;
   gap: var(--space-4);
   flex-shrink: 0;
   background: var(--bg-surface);
@@ -317,7 +318,7 @@ body {
 .content__header-right {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-5); /* more breathing room between density and stats */
 }
 
 /* Legacy stats container — hidden, kept for JS compat */
@@ -379,7 +380,7 @@ body {
 .content__stats-bar {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: 24px; /* wider separation between Projects / Favorites / Git Repos */
 }
 
 .content__stat {
@@ -463,8 +464,8 @@ body {
 .project-grid {
   display: grid;
   grid-template-columns: repeat(var(--grid-cols, 4), 1fr);
-  gap: var(--space-5);
-  align-items: stretch; /* Cards in same row share height; footer pins via margin-top:auto */
+  gap: var(--space-6); /* 24px — more breathable layout */
+  align-items: stretch;
 }
 
 /* ═══════════════════════════════════════ */
