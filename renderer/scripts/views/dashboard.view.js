@@ -78,7 +78,9 @@ const DashboardView = (() => {
   // ── Stats → Sidebar ─────────────────────────────────────
   function updateStats(projects) {
     const total     = projects.length;
-    const favorites = projects.filter(p => p.isFavorite).length;
+    // Read from FavoritesService — the only source of truth.
+    // project.isFavorite is a stale snapshot and never updates post-toggle.
+    const favorites = FavoritesService.count();
     const withGit   = projects.filter(p => p.hasGit).length;
 
     // Write to sidebar stat elements
@@ -111,5 +113,6 @@ const DashboardView = (() => {
 
   // Expose initDensityToggle so app.js can call it once at boot
   // Expose getCols so ProjectCard.render() can read density at render-time
-  return { render, initDensityToggle, getCols: getSavedCols };
+  // Expose updateStats so app.js can refresh sidebar counts on favorites toggle
+  return { render, initDensityToggle, getCols: getSavedCols, updateStats };
 })();

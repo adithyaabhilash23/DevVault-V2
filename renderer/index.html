@@ -86,6 +86,10 @@
         <svg class="sidebar__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         <span>Timeline</span>
       </button>
+      <button class="sidebar__nav-item" data-view="favorites" id="nav-favorites">
+        <svg class="sidebar__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span>Favorites</span>
+      </button>
       <button class="sidebar__nav-item" data-view="families" id="nav-families">
         <svg class="sidebar__nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
         <span>Families</span>
@@ -144,6 +148,12 @@
     <section class="view" id="view-timeline" hidden>
       <div class="timeline" id="timeline-container">
         <!-- Timeline events rendered by timeline.view.js -->
+      </div>
+    </section>
+
+    <section class="view" id="view-favorites" hidden>
+      <div class="project-grid" id="favorites-grid">
+        <!-- Favorite project cards rendered by favorites.view.js -->
       </div>
     </section>
 
@@ -215,6 +225,7 @@
   <script src="scripts/utils/icons.js"></script>
   <script src="scripts/api.js"></script>
   <script src="scripts/state.js"></script>
+  <script src="scripts/favorites.service.js"></script>
   <script src="scripts/components/toast.js"></script>
   <script src="scripts/components/modal.js"></script>
   <script src="scripts/components/project-card.js"></script>
@@ -222,6 +233,7 @@
   <script src="scripts/components/search-bar.js"></script>
   <script src="scripts/components/tag-input.js"></script>
   <script src="scripts/views/dashboard.view.js"></script>
+  <script src="scripts/views/favorites.view.js"></script>
   <script src="scripts/views/timeline.view.js"></script>
   <script src="scripts/views/families.view.js"></script>
   <script src="scripts/views/compare.view.js"></script>

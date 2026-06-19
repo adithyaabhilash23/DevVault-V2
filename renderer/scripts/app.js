@@ -11,6 +11,7 @@
   const VIEWS = {
     dashboard: { el: 'view-dashboard',  label: 'Dashboard',  render: () => DashboardView.render() },
     timeline:  { el: 'view-timeline',   label: 'Timeline',   render: () => TimelineView.render() },
+    favorites: { el: 'view-favorites',  label: 'Favorites',  render: () => FavoritesView.render() },
     families:  { el: 'view-families',   label: 'Families',   render: () => FamiliesView.render() },
     compare:   { el: 'view-compare',    label: 'Compare',    render: () => CompareView.render() },
     settings:  { el: 'view-settings',   label: 'Settings',   render: () => SettingsView.render() },
@@ -68,6 +69,12 @@
   State.on('filterAI', () => DashboardView.render());
   State.on('filterActivity', () => DashboardView.render());
 
+  // When favorites toggle, re-render FavoritesView (if active) + update sidebar stats
+  State.on('favorites', () => {
+    DashboardView.updateStats(State.get('projects') || []);
+    if (State.get('currentView') === 'favorites') FavoritesView.render();
+  });
+
   // ── Refresh Vault Button ─────────────────────────────────
   // V3.2: Spinner state. IPC/API completely unchanged.
   const REFRESH_IDLE_HTML = `
@@ -106,6 +113,7 @@
   });
 
   // ── Initialize ────────────────────────
+  FavoritesService.load(); // Must run before any card renders
   SearchBar.init();
 
   // Initialize density toggle
