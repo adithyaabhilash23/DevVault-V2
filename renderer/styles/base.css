@@ -49,51 +49,51 @@ img { max-width: 100%; display: block; }
 ul, ol { list-style: none; }
 
 /* ═══════════════════════════════════════ */
-/* COLOR TOKENS — DARK THEME V3           */
-/* Near-black base · Low saturation        */
+/* COLOR TOKENS — CLASSIC DARK THEME V3.3A */
+/* Restored: hex palette from original UI  */
 /* ═══════════════════════════════════════ */
 
 :root {
-  /* Base backgrounds — near-black with cool undertone */
-  --bg-base:       hsl(240, 15%, 5%);
-  --bg-surface:    hsl(240, 12%, 8%);
-  --bg-elevated:   hsl(240, 10%, 11%);
-  --bg-hover:      hsl(240, 10%, 14%);
-  --bg-active:     hsl(240, 10%, 17%);
-  --bg-card:       hsl(240, 10%, 9.5%);
+  /* Base backgrounds */
+  --bg-base:       #06070D;
+  --bg-surface:    #090A14;
+  --bg-elevated:   #0F111A;
+  --bg-hover:      #13162100;
+  --bg-active:     #1a1d2a;
+  --bg-card:       #0F111A;
 
-  /* Borders — subtle, intentional */
-  --border-subtle:  hsl(240, 8%, 13%);
-  --border-default: hsl(240, 8%, 18%);
-  --border-strong:  hsl(240, 8%, 25%);
-  --border-focus:   hsl(265, 60%, 50%);
+  /* Borders */
+  --border-subtle:  #1A1D2A;
+  --border-default: #1E2233;
+  --border-strong:  #2a2d3e;
+  --border-focus:   #7C5CFF;
 
-  /* Text — high readability */
-  --text-primary:   hsl(0, 0%, 93%);
-  --text-secondary: hsl(0, 0%, 58%);
-  --text-tertiary:  hsl(0, 0%, 40%);
-  --text-disabled:  hsl(0, 0%, 28%);
+  /* Text */
+  --text-primary:   #F3F4F6;
+  --text-secondary: #A0A4B8;
+  --text-tertiary:  #6D7285;
+  --text-disabled:  #4a4d5e;
 
-  /* Accent — Purple (calm, professional) */
-  --accent-hue: 265;
-  --accent:         hsl(var(--accent-hue), 60%, 60%);
-  --accent-hover:   hsl(var(--accent-hue), 65%, 68%);
-  --accent-muted:   hsla(var(--accent-hue), 50%, 55%, 0.12);
-  --accent-glow:    hsla(var(--accent-hue), 80%, 65%, 0.2);
-  --accent-text:    hsl(var(--accent-hue), 70%, 76%);
-  --accent-strong:  hsl(var(--accent-hue), 65%, 52%);
+  /* Accent — Accent Purple */
+  --accent-hue:     258;
+  --accent:         #7C5CFF;
+  --accent-hover:   #9D7CFF;
+  --accent-muted:   rgba(124, 92, 255, 0.18);
+  --accent-glow:    rgba(124, 92, 255, 0.22);
+  --accent-text:    #B89AFF;
+  --accent-strong:  #6B4EE8;
 
-  /* Semantic colors — low saturation */
-  --color-success:  hsl(152, 55%, 48%);
-  --color-warning:  hsl(38, 80%, 52%);
+  /* Semantic colors */
+  --color-success:  #20D67B;
+  --color-warning:  #FFB020;
   --color-danger:   hsl(0, 65%, 55%);
-  --color-info:     hsl(200, 70%, 55%);
+  --color-info:     #42A5FF;
 
-  /* Activity category colors */
-  --activity-today:     hsl(152, 55%, 48%);
-  --activity-week:      hsl(200, 70%, 55%);
-  --activity-month:     hsl(38, 80%, 52%);
-  --activity-inactive:  hsl(0, 0%, 40%);
+  /* Activity category colors (mapped from badge spec) */
+  --activity-today:    #20D67B;
+  --activity-week:     #42A5FF;
+  --activity-month:    #FFB020;
+  --activity-inactive: #6D7285;
 
   /* Tech stack badge colors */
   --tech-react:     hsl(193, 80%, 50%);
@@ -109,7 +109,7 @@ ul, ol { list-style: none; }
   --tech-vite:      hsl(270, 75%, 55%);
   --tech-electron:  hsl(195, 60%, 48%);
 
-  /* Spacing scale (4px base) */
+  /* Spacing scale (4px base) — UNCHANGED */
   --space-0: 0.125rem;  /* 2px */
   --space-1: 0.25rem;   /* 4px */
   --space-2: 0.5rem;    /* 8px */
@@ -121,7 +121,7 @@ ul, ol { list-style: none; }
   --space-10: 2.5rem;   /* 40px */
   --space-12: 3rem;     /* 48px */
 
-  /* Border radius — tighter, more professional */
+  /* Border radius — UNCHANGED */
   --radius-xs: 3px;
   --radius-sm: 5px;
   --radius-md: 8px;
@@ -129,15 +129,15 @@ ul, ol { list-style: none; }
   --radius-xl: 16px;
   --radius-full: 9999px;
 
-  /* Shadows — subtle depth */
-  --shadow-sm: 0 1px 2px hsla(0, 0%, 0%, 0.3);
-  --shadow-md: 0 2px 8px hsla(0, 0%, 0%, 0.35);
-  --shadow-lg: 0 4px 20px hsla(0, 0%, 0%, 0.45);
-  --shadow-glow: 0 0 16px hsla(var(--accent-hue), 65%, 55%, 0.12);
+  /* Shadows */
+  --shadow-sm:   0 1px 2px hsla(0, 0%, 0%, 0.4);
+  --shadow-md:   0 2px 8px hsla(0, 0%, 0%, 0.5);
+  --shadow-lg:   0 4px 20px hsla(0, 0%, 0%, 0.6);
+  --shadow-glow: 0 0 16px rgba(124, 92, 255, 0.15);
   --shadow-inset: inset 0 1px 0 hsla(0, 0%, 100%, 0.03);
 
-  /* Typography */
-  --font-display: 'Space Grotesk', 'Inter', sans-serif;
+  /* Typography — Inter only (classic theme) */
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-body:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono:    'JetBrains Mono', 'Consolas', 'Courier New', monospace;
 
@@ -149,13 +149,13 @@ ul, ol { list-style: none; }
   --font-2xl: 1.375rem;    /* 22px */
   --font-3xl: 1.75rem;     /* 28px */
 
-  /* Layout */
+  /* Layout — UNCHANGED */
   --sidebar-width: 270px;
   --header-height: 56px;
   --drawer-width: 480px;
   --statusbar-height: 26px;
 
-  /* Transitions — fast, professional */
+  /* Transitions — UNCHANGED */
   --transition-fast: 120ms ease;
   --transition-base: 200ms ease;
   --transition-slow: 350ms cubic-bezier(0.16, 1, 0.3, 1);

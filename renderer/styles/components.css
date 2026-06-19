@@ -25,12 +25,12 @@
 .btn__icon { width: 14px; height: 14px; flex-shrink: 0; }
 
 .btn--primary {
-  background: var(--accent);
+  background: linear-gradient(135deg, #8B5CF6, #6D5DFB);
   color: white;
   box-shadow: var(--shadow-sm);
 }
 .btn--primary:hover {
-  background: var(--accent-hover);
+  background: linear-gradient(135deg, #9D7CFF, #7C5CFF);
   box-shadow: var(--shadow-glow);
 }
 
@@ -354,9 +354,9 @@
 
 /* Git — orange */
 .badge--git {
-  background: hsla(25, 80%, 50%, 0.1);
-  color: hsl(25, 80%, 60%);
-  border-color: hsla(25, 80%, 50%, 0.15);
+  background: rgba(255, 90, 31, 0.10);
+  color: #FF6A3D;
+  border-color: rgba(255, 90, 31, 0.18);
 }
 
 /* Vercel — neutral (legacy: used in workspace) */
@@ -368,44 +368,44 @@
 
 /* Infra badge: active (Git present / Vercel present) — green */
 .badge--infra-active {
-  background: hsla(152, 55%, 45%, 0.12);
-  color: hsl(152, 60%, 52%);
-  border-color: hsla(152, 55%, 45%, 0.2);
+  background: rgba(0, 255, 140, 0.10);
+  color: #20D67B;
+  border-color: rgba(0, 255, 140, 0.18);
 }
 
-/* Infra badge: inactive (Git absent / Vercel absent) — gray */
+/* Infra badge: inactive (Git absent / Vercel absent) — muted gray */
 .badge--infra-inactive {
-  background: hsla(0, 0%, 40%, 0.06);
-  color: hsl(0, 0%, 36%);
-  border-color: hsla(0, 0%, 40%, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: #6D7285;
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 /* Activity: Updated Today — green */
 .badge--activity-today {
-  background: hsla(152, 55%, 45%, 0.1);
-  color: hsl(152, 60%, 52%);
-  border-color: hsla(152, 55%, 45%, 0.15);
+  background: rgba(0, 255, 140, 0.12);
+  color: #20D67B;
+  border-color: rgba(0, 255, 140, 0.18);
 }
 
 /* Activity: Updated This Week — blue */
 .badge--activity-week {
-  background: hsla(210, 70%, 55%, 0.1);
-  color: hsl(210, 70%, 60%);
-  border-color: hsla(210, 70%, 55%, 0.15);
+  background: rgba(37, 149, 255, 0.12);
+  color: #42A5FF;
+  border-color: rgba(37, 149, 255, 0.18);
 }
 
 /* Activity: Updated This Month — amber */
 .badge--activity-month {
-  background: hsla(38, 80%, 52%, 0.1);
-  color: hsl(38, 80%, 58%);
-  border-color: hsla(38, 80%, 52%, 0.15);
+  background: rgba(255, 171, 0, 0.12);
+  color: #FFB020;
+  border-color: rgba(255, 171, 0, 0.18);
 }
 
-/* Activity: Inactive — gray */
+/* Activity: Inactive — muted gray */
 .badge--activity-inactive {
-  background: hsla(0, 0%, 40%, 0.06);
-  color: hsl(0, 0%, 50%);
-  border-color: hsla(0, 0%, 40%, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: #D6D8E0;
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 /* ═══════════════════════════════════════ */
