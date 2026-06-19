@@ -1,7 +1,7 @@
 /**
- * DevVault V3.1A — components.css
+ * DevVault V3.2 — components.css
  * Reusable UI components: buttons, cards, badges, inputs, tags.
- * 4-zone project card with perfect alignment.
+ * Natural-flow project card — no fixed zone heights.
  */
 
 /* ═══════════════════════════════════════ */
@@ -13,7 +13,7 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 7px var(--space-3);
+  padding: 8px var(--space-3);
   border-radius: var(--radius-sm);
   font-size: var(--font-md);
   font-weight: 500;
@@ -65,22 +65,23 @@
 .btn--sm { padding: 3px var(--space-2); font-size: var(--font-sm); }
 
 /* ═══════════════════════════════════════ */
-/* PROJECT CARD — 4-Zone Architecture     */
-/* All zones are fixed-height so every    */
-/* card divider aligns across the grid.   */
+/* PROJECT CARD — V3.3                    */
+/* Natural-flow zones, expandable tech.   */
 /* ═══════════════════════════════════════ */
 
 .project-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
+  border-radius: 12px;
   cursor: pointer;
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+  transition: border-color var(--transition-base),
+              box-shadow var(--transition-base),
+              transform var(--transition-base);
   position: relative;
   overflow: hidden;
-  /* Flex column so footer always sticks to bottom */
   display: flex;
   flex-direction: column;
+  /* NO fixed height — cards size naturally */
 }
 
 /* Subtle accent top-line on hover */
@@ -91,16 +92,15 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--accent), transparent 75%);
+  background: linear-gradient(90deg, var(--accent), transparent 70%);
   opacity: 0;
-  transition: opacity var(--transition-fast);
+  transition: opacity var(--transition-base);
 }
 
 .project-card:hover {
   border-color: var(--border-default);
-  background: var(--bg-elevated);
-  box-shadow: 0 2px 12px hsla(0, 0%, 0%, 0.25);
-  transform: translateY(-1px);
+  box-shadow: 0 4px 16px hsla(0, 0%, 0%, 0.2);
+  transform: translateY(-2px);
 }
 
 .project-card:hover::before {
@@ -111,38 +111,57 @@
   border-color: hsla(var(--accent-hue), 50%, 55%, 0.18);
 }
 
-/* ── Zone 1: Header (title + star) ─────── */
+/* ── Zone 1: Header ──────────────────── */
 .project-card__header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-2);
-  /* Extra bottom padding = breathing room before Zone 2 */
-  padding: var(--space-4) var(--space-4) var(--space-4);
+  padding: 20px 20px 14px;
   flex-shrink: 0;
 }
 
 .project-card__title {
   font-family: var(--font-display);
-  font-size: var(--font-lg);
-  font-weight: 600;
+  font-size: 1.0625rem; /* 17px */
+  font-weight: 700;
   color: var(--text-primary);
-  line-height: 1.25;
-  letter-spacing: -0.015em;
-  /* Clamp to 2 lines max for long names */
+  line-height: 1.3;
+  letter-spacing: -0.02em;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  flex: 1;
+}
+
+/* Compact density: single-line title */
+.project-card__title--clamp1 {
+  -webkit-line-clamp: 1;
+}
+
+/* ── Density: hide footer labels ─────── */
+/* medium (4-col) and compact (5-col)    */
+/* suppress the Files/Size/Updated text. */
+/* Labels stay in DOM — no re-render     */
+/* needed when switching density.        */
+.project-card--medium .project-card__footer-label,
+.project-card--compact .project-card__footer-label {
+  display: none;
 }
 
 .project-card__favorite {
   color: var(--text-tertiary);
-  font-size: var(--font-xl);
+  font-size: 1.125rem;
   flex-shrink: 0;
   transition: color var(--transition-fast);
   line-height: 1;
-  margin-top: 1px;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.project-card__favorite:hover {
+  color: hsl(42, 85%, 65%);
 }
 
 .project-card__favorite--active { color: hsl(42, 85%, 55%); }
@@ -152,59 +171,135 @@
   width: 100%;
   height: 120px;
   object-fit: cover;
-  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  border-radius: 12px 12px 0 0;
   background: var(--bg-elevated);
   flex-shrink: 0;
 }
 
-/* ── Zone 2: Tech Stack ─────────────────  */
-/* min-height: 52px — guarantees all cards */
-/* have identical space for tech badges    */
+/* ── Zone 2: Tech Stack ──────────────── */
+/* Default: one row only.                 */
+/* flex-wrap:nowrap + overflow:hidden     */
+/* guarantees badges never push card      */
+/* taller. JS reveals overflow via class. */
 .project-card__tech {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1);
-  padding: 0 var(--space-4) var(--space-4);
-  min-height: 52px;
-  align-content: flex-start;
+  flex-wrap: nowrap;
+  gap: 5px;
+  padding: 0 20px 12px;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
-/* ── Zone 3: Status Badges ───────────── */
-/* min-height: 42px — guarantees divider  */
-/* sits at same vertical position always  */
-.project-card__status {
+/* Expanded state: all overflow badges    */
+/* are revealed, wrapping is re-enabled.  */
+.project-card__tech--expanded {
+  flex-wrap: wrap;
+  overflow: visible;
+}
+
+/* Tech toggle button — clickable +N badge */
+.badge--tech-toggle {
+  cursor: pointer;
+  background: var(--bg-elevated);
+  color: var(--text-tertiary);
+  border-color: var(--border-subtle);
+  font-size: var(--font-xs);
+  flex-shrink: 0; /* Never get clipped by nowrap */
+  transition: all var(--transition-fast);
+}
+
+.badge--tech-toggle:hover {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  border-color: var(--border-default);
+}
+
+/* Hidden badge class — !important overrides  */
+/* .badge { display: inline-flex } which has  */
+/* equal specificity to the browser [hidden]  */
+/* attribute and was winning, making hidden=  */
+/* completely ineffective.                    */
+.badge--hidden {
+  display: none !important;
+}
+
+/* ── Zone 3: Infra — Git + Vercel ───────── */
+/* Always rendered. Active=green, else gray. */
+.project-card__infra {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-1);
-  padding: 0 var(--space-4) var(--space-4);
-  min-height: 42px;
-  align-content: flex-start;
+  gap: 5px;
+  padding: 0 20px 10px;
   flex-shrink: 0;
 }
 
-/* ── Zone 4: Footer (stats) ─────────── */
-/* margin-top:auto is the key — it pushes */
-/* the border-top divider flush to the    */
-/* bottom of Zones 1-3 regardless of how  */
-/* much content they contain.             */
+/* ── Zone 4: Activity ────────────────────── */
+/* Always rendered. One activity badge.      */
+.project-card__activity {
+  display: flex;
+  gap: 5px;
+  padding: 0 20px 16px;
+  flex-shrink: 0;
+}
+
+/* ── Zone 5: Footer ──────────────────── */
+/* margin-top:auto pins footer to bottom */
+/* Inset divider via ::before — no       */
+/* border touches card edges.            */
 .project-card__footer {
   margin-top: auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  font-size: var(--font-sm);
-  color: var(--text-tertiary);
-  padding: var(--space-4) var(--space-4);
-  border-top: 1px solid var(--border-subtle);
+  gap: 20px;
+  justify-content: flex-start;
+  padding: 12px 20px 14px;
   flex-shrink: 0;
-  gap: var(--space-2);
+  position: relative;
 }
 
-.project-card__footer span {
+/* Inset divider — floats 20px from each edge */
+.project-card__footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+/* No more grid cells — each item is a simple inline row */
+.project-card__footer-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  /* No individual padding — parent handles it */
+}
+
+.project-card__footer-icon {
+  width: 14px;
+  height: 14px;
+  color: var(--text-tertiary);
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+.project-card__footer-value {
+  font-family: var(--font-display);
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+/* Label sits inline after the value */
+.project-card__footer-label {
+  font-size: var(--font-sm);
+  color: var(--text-tertiary);
+  line-height: 1;
+  white-space: nowrap;
 }
 
 /* ═══════════════════════════════════════ */
@@ -215,7 +310,7 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: var(--radius-full);
   font-size: var(--font-sm);
   font-weight: 500;
@@ -226,11 +321,20 @@
   white-space: nowrap;
 }
 
-/* Tech badges */
+/* Overflow badge: +N more */
+.badge--overflow {
+  background: var(--bg-elevated);
+  color: var(--text-tertiary);
+  border-color: var(--border-subtle);
+  font-size: var(--font-xs);
+  cursor: default;
+}
+
+/* Tech badges — muted dark purple */
 .badge--tech {
   background: hsla(var(--accent-hue), 30%, 50%, 0.1);
-  color: var(--text-secondary);
-  border-color: hsla(var(--accent-hue), 30%, 50%, 0.12);
+  color: hsla(var(--accent-hue), 50%, 72%, 1);
+  border-color: hsla(var(--accent-hue), 30%, 50%, 0.15);
 }
 
 /* Git — orange */
@@ -240,11 +344,25 @@
   border-color: hsla(25, 80%, 50%, 0.15);
 }
 
-/* Vercel — neutral */
+/* Vercel — neutral (legacy: used in workspace) */
 .badge--vercel {
   background: hsla(0, 0%, 80%, 0.06);
   color: hsl(0, 0%, 72%);
   border-color: hsla(0, 0%, 80%, 0.1);
+}
+
+/* Infra badge: active (Git present / Vercel present) — green */
+.badge--infra-active {
+  background: hsla(152, 55%, 45%, 0.12);
+  color: hsl(152, 60%, 52%);
+  border-color: hsla(152, 55%, 45%, 0.2);
+}
+
+/* Infra badge: inactive (Git absent / Vercel absent) — gray */
+.badge--infra-inactive {
+  background: hsla(0, 0%, 40%, 0.06);
+  color: hsl(0, 0%, 36%);
+  border-color: hsla(0, 0%, 40%, 0.1);
 }
 
 /* Activity: Updated Today — green */
@@ -457,4 +575,17 @@ textarea.input {
 .stat-card__label {
   font-size: var(--font-sm);
   color: var(--text-tertiary);
+}
+
+/* ═══════════════════════════════════════ */
+/* PAGE FOOTER                             */
+/* ═══════════════════════════════════════ */
+
+.page-footer {
+  padding: var(--space-6) var(--space-4);
+  text-align: center;
+  font-size: var(--font-sm);
+  color: var(--text-tertiary);
+  opacity: 0.5;
+  user-select: none;
 }

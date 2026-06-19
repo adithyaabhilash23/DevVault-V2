@@ -1,7 +1,6 @@
 /**
- * DevVault V3.1A — App Boot Sequence
+ * DevVault V3.2 — App Boot Sequence
  * Initializes the application, wires up navigation, and subscribes to state.
- * Scan-progress bar is now inside the sidebar footer.
  */
 
 // @ts-nocheck
@@ -69,14 +68,28 @@
   State.on('filterAI', () => DashboardView.render());
   State.on('filterActivity', () => DashboardView.render());
 
-  // ── Refresh Vault Button ────────────────────
-  // Scan-progress UI removed (V3.1B). Scanner IPC unchanged.
-  DOM.id('btn-refresh-vault').addEventListener('click', async () => {
-    State.set({ isScanning: true });
-    const btn = DOM.id('btn-refresh-vault');
-    if (btn) btn.disabled = true;
+  // ── Refresh Vault Button ─────────────────────────────────
+  // V3.2: Spinner state. IPC/API completely unchanged.
+  const REFRESH_IDLE_HTML = `
+    <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="23 4 23 10 17 10"/>
+      <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/>
+    </svg>
+    Refresh Vault`;
 
-    // Progress events still consumed (keeps IPC clean), just not shown in UI
+  const REFRESH_BUSY_HTML = `
+    <svg class="btn__icon btn__icon--spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="23 4 23 10 17 10"/>
+      <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/>
+    </svg>
+    Refreshing…`;
+
+  DOM.id('btn-refresh-vault').addEventListener('click', async () => {
+    const btn = DOM.id('btn-refresh-vault');
+    if (btn) { btn.innerHTML = REFRESH_BUSY_HTML; btn.disabled = true; }
+    State.set({ isScanning: true });
+
+    // Progress events consumed (IPC clean), not shown in UI
     API.onScanProgress(() => {});
 
     try {
@@ -88,7 +101,7 @@
       State.set({ isScanning: false });
     } finally {
       API.offScanProgress();
-      if (btn) btn.disabled = false;
+      if (btn) { btn.innerHTML = REFRESH_IDLE_HTML; btn.disabled = false; }
     }
   });
 

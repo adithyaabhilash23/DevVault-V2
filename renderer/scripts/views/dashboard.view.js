@@ -17,20 +17,23 @@ const DashboardView = (() => {
     } catch { return DEFAULT_COLS; }
   }
 
-  function setCols(n) {
+  function setCols(n, triggerRender = false) {
     try { localStorage.setItem(DENSITY_KEY, String(n)); } catch {}
     document.documentElement.style.setProperty('--grid-cols', String(n));
     // Update toggle button active state
     DOM.qsa('.density-toggle__btn').forEach(btn => {
       btn.classList.toggle('density-toggle__btn--active', parseInt(btn.dataset.cols) === n);
     });
+    // Rebuild cards when user switches density.
+    // Guard: boot passes false — projects not loaded yet.
+    if (triggerRender) render();
   }
 
   function initDensityToggle() {
     const cols = getSavedCols();
-    setCols(cols);
+    setCols(cols, false); // boot: CSS/toggle only, no render
     DOM.qsa('.density-toggle__btn').forEach(btn => {
-      btn.addEventListener('click', () => setCols(parseInt(btn.dataset.cols)));
+      btn.addEventListener('click', () => setCols(parseInt(btn.dataset.cols), true));
     });
   }
 
@@ -107,5 +110,6 @@ const DashboardView = (() => {
   }
 
   // Expose initDensityToggle so app.js can call it once at boot
-  return { render, initDensityToggle };
+  // Expose getCols so ProjectCard.render() can read density at render-time
+  return { render, initDensityToggle, getCols: getSavedCols };
 })();

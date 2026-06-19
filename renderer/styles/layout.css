@@ -1,5 +1,5 @@
 /**
- * DevVault V3.1A — layout.css
+ * DevVault V3.2 — layout.css
  *
  * Core layout structure: sidebar (expanded, 5 sections) + content area.
  * Inspired by Linear / Arc Browser / JetBrains Toolbox.
@@ -309,8 +309,8 @@ body {
 
 .content__view-title {
   font-family: var(--font-display);
-  font-size: var(--font-lg);
-  font-weight: 600;
+  font-size: var(--font-xl);
+  font-weight: 700;
   color: var(--text-primary);
   letter-spacing: -0.02em;
 }
@@ -370,7 +370,7 @@ body {
 .view {
   flex: 1;
   overflow-y: auto;
-  padding: var(--space-5);
+  padding: var(--space-6);
 }
 
 .view[hidden] {
@@ -384,8 +384,8 @@ body {
 .project-grid {
   display: grid;
   grid-template-columns: repeat(var(--grid-cols, 4), 1fr);
-  gap: var(--space-4);
-  align-items: start;
+  gap: var(--space-5);
+  align-items: stretch; /* Cards in same row share height; footer pins via margin-top:auto */
 }
 
 /* ═══════════════════════════════════════ */
