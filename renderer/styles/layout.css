@@ -209,7 +209,7 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 4px;
   padding-top: var(--space-2);
   overflow: hidden;
   margin-bottom: var(--space-2);
@@ -238,17 +238,6 @@ body {
 .sidebar__nav-item--active {
   background: var(--accent-muted);
   color: var(--accent-text);
-}
-
-.sidebar__nav-item--active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 6px;
-  bottom: 6px;
-  width: 2px;
-  background: var(--accent);
-  border-radius: var(--radius-full);
 }
 
 .sidebar__nav-icon {
@@ -293,7 +282,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px var(--space-4);
+  padding: 8 var(--space-4);
   border-bottom: 1px solid var(--border-subtle);
   min-height: 60px;
   gap: var(--space-4);
@@ -308,7 +297,9 @@ body {
 .content__header-left {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
+
+  margin-left: 16px;
 }
 
 .content__view-title {
@@ -336,22 +327,21 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: var(--bg-elevated);
-  border: 1px solid rgba(26, 29, 42, 0.7); /* slightly softer than border-subtle */
+
+  /* slightly softer than border-subtle */
   border-radius: var(--radius-sm);
-  padding: 4px 10px; /* slimmer height, more left breathing room */
+  padding: 10px 10px;
+  height: 26px;
+  /* slimmer height, more left breathing room */
   min-width: 200px;
   transition: border-color var(--transition-fast);
 }
 
-.content__search:focus-within {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--accent-muted);
-}
+
 
 .content__search-icon {
-  width: 13px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
   color: var(--text-tertiary);
   flex-shrink: 0;
   opacity: 0.7;
@@ -365,7 +355,8 @@ body {
   color: var(--text-primary);
   font-size: var(--font-md);
   font-family: var(--font-body);
-  line-height: 1; /* prevents extra height from line-height */
+  line-height: 1;
+  /* prevents extra height from line-height */
   min-width: 0;
 }
 

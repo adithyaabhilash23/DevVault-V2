@@ -19,7 +19,9 @@
 /* RESET                                   */
 /* ═══════════════════════════════════════ */
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -42,11 +44,34 @@ body {
   height: 100vh;
 }
 
-a { color: inherit; text-decoration: none; }
-button { cursor: pointer; font-family: inherit; border: none; background: none; }
-input, select, textarea { font-family: inherit; font-size: inherit; }
-img { max-width: 100%; display: block; }
-ul, ol { list-style: none; }
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  background: none;
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+ul,
+ol {
+  list-style: none;
+}
 
 /* ═══════════════════════════════════════ */
 /* COLOR TOKENS — CLASSIC DARK THEME V3.3A */
@@ -55,102 +80,119 @@ ul, ol { list-style: none; }
 
 :root {
   /* Base backgrounds */
-  --bg-base:       #06070D;
-  --bg-surface:    #090A14;
-  --bg-elevated:   #0F111A;
-  --bg-hover:      #13162100;
-  --bg-active:     #1a1d2a;
-  --bg-card:       #0F111A;
+  --bg-base: hsl(240, 20%, 8%);
+  --bg-surface: hsl(240, 15%, 8%);
+  --bg-elevated: hsl(240, 12%, 12%);
+  --bg-hover: hsl(240, 10%, 16%);
+  --bg-active: hsl(240, 10%, 20%);
+  --bg-card: hsl(240, 12%, 12%);
 
   /* Borders */
-  --border-subtle:  #1A1D2A;
-  --border-default: #1E2233;
-  --border-strong:  #2a2d3e;
-  --border-focus:   #7C5CFF;
+  --border-subtle: rgba(255, 255, 255, 0.03);
+  --border-default: hsl(240, 10%, 20%);
+  --border-strong: hsl(240, 10%, 30%);
+  --border-focus: #7C5CFF;
 
   /* Text */
-  --text-primary:   #F3F4F6;
+  --text-primary: #F3F4F6;
   --text-secondary: #A0A4B8;
-  --text-tertiary:  #6D7285;
-  --text-disabled:  #4a4d5e;
+  --text-tertiary: #6D7285;
+  --text-disabled: #4a4d5e;
 
   /* Accent — Accent Purple */
-  --accent-hue:     258;
-  --accent:         #7C5CFF;
-  --accent-hover:   #9D7CFF;
-  --accent-muted:   rgba(124, 92, 255, 0.18);
-  --accent-glow:    rgba(124, 92, 255, 0.22);
-  --accent-text:    #B89AFF;
-  --accent-strong:  #6B4EE8;
+  --accent-hue: 258;
+  --accent: #7C5CFF;
+  --accent-hover: #9D7CFF;
+  --accent-muted: rgba(124, 92, 255, 0.18);
+  --accent-glow: hsl(var(--accent-hue), 100%, 70%);
+  --accent-text: #B89AFF;
+  --accent-strong: #6B4EE8;
 
   /* Semantic colors */
-  --color-success:  #20D67B;
-  --color-warning:  #FFB020;
-  --color-danger:   hsl(0, 65%, 55%);
-  --color-info:     #42A5FF;
+  --color-success: #20D67B;
+  --color-warning: #FFB020;
+  --color-danger: hsl(0, 65%, 55%);
+  --color-info: #42A5FF;
 
   /* Activity category colors (mapped from badge spec) */
-  --activity-today:    #20D67B;
-  --activity-week:     #42A5FF;
-  --activity-month:    #FFB020;
+  --activity-today: #20D67B;
+  --activity-week: #42A5FF;
+  --activity-month: #FFB020;
   --activity-inactive: #6D7285;
 
   /* Tech stack badge colors */
-  --tech-react:     hsl(193, 80%, 50%);
-  --tech-nextjs:    hsl(0, 0%, 80%);
-  --tech-node:      hsl(120, 45%, 42%);
-  --tech-python:    hsl(210, 55%, 52%);
-  --tech-flutter:   hsl(205, 75%, 50%);
-  --tech-unity:     hsl(0, 0%, 65%);
-  --tech-java:      hsl(15, 75%, 50%);
-  --tech-csharp:    hsl(265, 55%, 52%);
-  --tech-html:      hsl(16, 75%, 52%);
-  --tech-typescript:hsl(210, 55%, 52%);
-  --tech-vite:      hsl(270, 75%, 55%);
-  --tech-electron:  hsl(195, 60%, 48%);
+  --tech-react: hsl(193, 80%, 50%);
+  --tech-nextjs: hsl(0, 0%, 80%);
+  --tech-node: hsl(120, 45%, 42%);
+  --tech-python: hsl(210, 55%, 52%);
+  --tech-flutter: hsl(205, 75%, 50%);
+  --tech-unity: hsl(0, 0%, 65%);
+  --tech-java: hsl(15, 75%, 50%);
+  --tech-csharp: hsl(265, 55%, 52%);
+  --tech-html: hsl(16, 75%, 52%);
+  --tech-typescript: hsl(210, 55%, 52%);
+  --tech-vite: hsl(270, 75%, 55%);
+  --tech-electron: hsl(195, 60%, 48%);
 
   /* Spacing scale (4px base) — UNCHANGED */
-  --space-0: 0.125rem;  /* 2px */
-  --space-1: 0.25rem;   /* 4px */
-  --space-2: 0.5rem;    /* 8px */
-  --space-3: 0.75rem;   /* 12px */
-  --space-4: 1rem;      /* 16px */
-  --space-5: 1.25rem;   /* 20px */
-  --space-6: 1.5rem;    /* 24px */
-  --space-8: 2rem;      /* 32px */
-  --space-10: 2.5rem;   /* 40px */
-  --space-12: 3rem;     /* 48px */
+  --space-0: 0.125rem;
+  /* 2px */
+  --space-1: 0.25rem;
+  /* 4px */
+  --space-2: 0.5rem;
+  /* 8px */
+  --space-3: 0.75rem;
+  /* 12px */
+  --space-4: 1rem;
+  /* 16px */
+  --space-5: 1.25rem;
+  /* 20px */
+  --space-6: 1.5rem;
+  /* 24px */
+  --space-8: 2rem;
+  /* 32px */
+  --space-10: 2.5rem;
+  /* 40px */
+  --space-12: 3rem;
+  /* 48px */
 
   /* Border radius — UNCHANGED */
   --radius-xs: 3px;
-  --radius-sm: 5px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
   --radius-xl: 16px;
   --radius-full: 9999px;
 
   /* Shadows */
-  --shadow-sm:   0 1px 2px hsla(0, 0%, 0%, 0.4);
-  --shadow-md:   0 2px 8px hsla(0, 0%, 0%, 0.5);
-  --shadow-lg:   0 4px 20px hsla(0, 0%, 0%, 0.6);
-  --shadow-glow: 0 0 16px rgba(124, 92, 255, 0.15);
+  --shadow-sm: 0 1px 2px hsla(0, 0%, 0%, 0.4);
+  --shadow-md: 0 4px 12px hsla(0, 0%, 0%, 0.4);
+  --shadow-lg: 0 8px 30px hsla(0, 0%, 0%, 0.5);
+  --shadow-glow: 0 0 20px hsla(var(--accent-hue), 85%, 65%, 0.15);
   --shadow-inset: inset 0 1px 0 hsla(0, 0%, 100%, 0.03);
 
   /* Typography — Inter only (classic theme) */
   --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono:    'JetBrains Mono', 'Consolas', 'Courier New', monospace;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
 
-  --font-xs:  0.75rem;     /* 12px */
-  --font-sm:  0.8125rem;   /* 13px */
-  --font-md:  0.875rem;    /* 14px */
-  --font-lg:  1rem;        /* 16px */
-  --font-xl:  1.1875rem;   /* 19px */
-  --font-2xl: 1.375rem;    /* 22px */
-  --font-3xl: 1.75rem;     /* 28px */
+  --font-xs: 0.75rem;
+  /* 12px */
+  --font-sm: 0.8125rem;
+  /* 13px */
+  --font-md: 0.875rem;
+  /* 14px */
+  --font-lg: 1rem;
+  /* 16px */
+  --font-xl: 1.1875rem;
+  /* 19px */
+  --font-2xl: 1.375rem;
+  /* 22px */
+  --font-3xl: 1.75rem;
+  /* 28px */
 
   /* Layout — UNCHANGED */
-  --sidebar-width: 220px;
+  --sidebar-width: 240px;
   --header-height: 56px;
   --drawer-width: 480px;
   --statusbar-height: 26px;
@@ -165,21 +207,65 @@ ul, ol { list-style: none; }
 /* TYPOGRAPHY UTILITIES                    */
 /* ═══════════════════════════════════════ */
 
-.text-xs      { font-size: var(--font-xs); }
-.text-sm      { font-size: var(--font-sm); }
-.text-md      { font-size: var(--font-md); }
-.text-lg      { font-size: var(--font-lg); }
-.text-xl      { font-size: var(--font-xl); }
-.text-2xl     { font-size: var(--font-2xl); }
-.text-3xl     { font-size: var(--font-3xl); }
-.text-muted   { color: var(--text-secondary); }
-.text-dimmed  { color: var(--text-tertiary); }
-.text-accent  { color: var(--accent); }
-.font-medium  { font-weight: 500; }
-.font-semibold{ font-weight: 600; }
-.font-bold    { font-weight: 700; }
-.font-display { font-family: var(--font-display); }
-.font-mono    { font-family: var(--font-mono); }
+.text-xs {
+  font-size: var(--font-xs);
+}
+
+.text-sm {
+  font-size: var(--font-sm);
+}
+
+.text-md {
+  font-size: var(--font-md);
+}
+
+.text-lg {
+  font-size: var(--font-lg);
+}
+
+.text-xl {
+  font-size: var(--font-xl);
+}
+
+.text-2xl {
+  font-size: var(--font-2xl);
+}
+
+.text-3xl {
+  font-size: var(--font-3xl);
+}
+
+.text-muted {
+  color: var(--text-secondary);
+}
+
+.text-dimmed {
+  color: var(--text-tertiary);
+}
+
+.text-accent {
+  color: var(--accent);
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
 
 /* ═══════════════════════════════════════ */
 /* SCROLLBAR — Premium thin dark          */
